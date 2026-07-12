@@ -4,259 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Students - CodeShala Admin</title>
+     <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <style>
-        .stats-mini {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 14px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-mini {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px;
-            text-align: center;
-            box-shadow: var(--shadow-xs);
-        }
-        
-        .stat-mini .val {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-        
-        .stat-mini .lbl {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        
-        .search-box {
-            margin-bottom: 20px;
-        }
-        
-        .search-box input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.9rem;
-            background: white;
-            outline: none;
-            transition: var(--transition);
-        }
-        
-        .search-box input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
-        }
-        
-        .student-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            box-shadow: var(--shadow-xs);
-            transition: var(--transition);
-        }
-        
-        .student-card:hover {
-            box-shadow: var(--shadow);
-        }
-        
-        .student-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        
-        .student-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--primary-light);
-            color: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-        
-        .student-details h4 {
-            font-size: 0.95rem;
-            margin-bottom: 2px;
-        }
-        
-        .student-details span {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-        
-        .tests-count {
-            background: var(--bg);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.85rem;
-            color: var(--primary);
-        }
-        
-        @media (max-width: 768px) {
-            .stats-mini {
-                grid-template-columns: 1fr;
-            }
-            .student-card {
-                flex-direction: column;
-                gap: 12px;
-                text-align: center;
-            }
-            .student-info {
-                flex-direction: column;
-            }
-        }
-    </style>
+    <style>.stats-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.stat-mini{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center}.stat-mini .val{font-size:1.8rem;font-weight:800;color:var(--primary)}.stat-mini .lbl{font-size:.78rem;color:var(--text-secondary)}.search-box{margin-bottom:20px}.search-box input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;background:white;outline:none}.student-card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.student-info{display:flex;align-items:center;gap:14px}.student-avatar{width:44px;height:44px;border-radius:12px;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem}.tests-count{background:var(--bg);padding:8px 16px;border-radius:20px;font-weight:700;font-size:.85rem;color:var(--primary)}@media(max-width:768px){.stats-mini{grid-template-columns:1fr}}</style>
 </head>
 <body>
     <div class="dashboard">
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <a href="../index.html" class="logo">
-                    <span class="logo-icon">⚡</span>
-                    <span>Code<span class="grad-text">Shala</span></span>
-                </a>
-                <span class="admin-badge">Admin</span>
-            </div>
+            <div class="sidebar-header"><a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>Code<span class="grad-text">Shala</span></span></a><span class="admin-badge">Admin</span></div>
             <nav class="sidebar-nav">
                 <a href="dashboard.html" class="nav-item"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a>
                 <a href="create-test.html" class="nav-item"><i class='bx bxs-plus-circle'></i><span>Create Test</span></a>
                 <a href="add-questions.html" class="nav-item"><i class='bx bxs-help-circle'></i><span>Add Questions</span></a>
                 <a href="view-results.html" class="nav-item"><i class='bx bxs-bar-chart-alt-2'></i><span>View Results</span></a>
+                <a href="check-answers.html" class="nav-item"><i class='bx bxs-check-shield'></i><span>Check Answers</span></a>
                 <a href="manage-students.html" class="nav-item active"><i class='bx bxs-group'></i><span>Students</span></a>
             </nav>
-            <div class="sidebar-footer">
-                <a href="#" onclick="logout()" class="nav-item logout"><i class='bx bxs-log-out-circle'></i><span>Logout</span></a>
-            </div>
+            <div class="sidebar-footer"><a href="#" onclick="logout()" class="nav-item logout"><i class='bx bxs-log-out-circle'></i><span>Logout</span></a></div>
         </aside>
-
         <main class="main-content">
-            <header class="topbar">
-                <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
-                <span style="font-weight: 700;">Manage Students</span>
-                <span class="admin-email" id="adminEmail"></span>
-            </header>
-
+            <header class="topbar"><button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button><span style="font-weight:700">Manage Students</span><span class="admin-email" id="adminEmail"></span></header>
             <div class="content">
-                <!-- Stats -->
-                <div class="stats-mini">
-                    <div class="stat-mini">
-                        <div class="val" id="totalStudents">0</div>
-                        <div class="lbl">Total Students</div>
-                    </div>
-                    <div class="stat-mini">
-                        <div class="val" id="totalTaken">0</div>
-                        <div class="lbl">Tests Taken</div>
-                    </div>
-                    <div class="stat-mini">
-                        <div class="val" id="activeToday">0</div>
-                        <div class="lbl">Active Today</div>
-                    </div>
-                </div>
-
-                <!-- Search -->
-                <div class="search-box">
-                    <input type="text" id="searchStudent" placeholder="🔍 Search by name or email..." onkeyup="filterStudents()">
-                </div>
-
-                <!-- Students List -->
-                <div id="studentsList">
-                    <div class="empty-state">
-                        <i class='bx bx-group'></i>
-                        <p>No students registered yet</p>
-                    </div>
-                </div>
+                <div class="stats-mini"><div class="stat-mini"><div class="val" id="totalStudents">0</div><div class="lbl">Total Students</div></div><div class="stat-mini"><div class="val" id="totalTaken">0</div><div class="lbl">Tests Taken</div></div><div class="stat-mini"><div class="val" id="activeToday">0</div><div class="lbl">Active Today</div></div></div>
+                <div class="search-box"><input type="text" id="searchStudent" placeholder="🔍 Search by name or email..." onkeyup="filterStudents()"></div>
+                <div id="studentsList"><div class="empty-state"><i class='bx bx-group'></i><p>No students yet</p></div></div>
             </div>
         </main>
     </div>
-
     <script src="../assets/js/firebase-config.js"></script>
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
     <script>
-        let allStudents = [];
-
-        document.getElementById('menuToggle').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
-
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
-            document.getElementById('adminEmail').textContent = user.email;
-            await loadStudents();
-        });
-
-        async function loadStudents() {
-            allStudents = await callSheetAPI('getAllStudents') || [];
-            renderStudents(allStudents);
-            updateStats(allStudents);
-        }
-
-        function filterStudents() {
-            const search = document.getElementById('searchStudent').value.toLowerCase();
-            const filtered = allStudents.filter(s => 
-                (s.name || '').toLowerCase().includes(search) ||
-                (s.email || '').toLowerCase().includes(search)
-            );
-            renderStudents(filtered);
-        }
-
-        function renderStudents(students) {
-            const container = document.getElementById('studentsList');
-            
-            if (!students || students.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="bx bx-group"></i><p>No students found</p></div>';
-                return;
-            }
-            
-            container.innerHTML = students.map(s => `
-                <div class="student-card">
-                    <div class="student-info">
-                        <div class="student-avatar">${(s.name || s.email || 'S')[0].toUpperCase()}</div>
-                        <div class="student-details">
-                            <h4>${s.name || 'Unknown'}</h4>
-                            <span>${s.email}</span>
-                        </div>
-                    </div>
-                    <div class="tests-count">
-                        📝 ${s.testsAttempted || 0} Tests
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function updateStats(students) {
-            document.getElementById('totalStudents').textContent = students.length;
-            
-            const total = students.reduce((sum, s) => sum + (parseInt(s.testsAttempted) || 0), 0);
-            document.getElementById('totalTaken').textContent = total;
-            
-            const today = new Date().toDateString();
-            const active = students.filter(s => s.registeredAt && new Date(s.registeredAt).toDateString() === today).length;
-            document.getElementById('activeToday').textContent = active;
-        }
+        let allStudents=[];document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open')});auth.onAuthStateChanged(async(u)=>{if(!u){window.location.href='login.html';return}document.getElementById('adminEmail').textContent=u.email;await loadStudents()});
+        async function loadStudents(){allStudents=await callSheetAPI('getAllStudents')||[];renderStudents(allStudents);updateStats(allStudents)}
+        function filterStudents(){const s=document.getElementById('searchStudent').value.toLowerCase();renderStudents(allStudents.filter(x=>(x.name||'').toLowerCase().includes(s)||(x.email||'').toLowerCase().includes(s)))}
+        function renderStudents(s){const c=document.getElementById('studentsList');if(!s||s.length===0){c.innerHTML='<div class="empty-state"><i class="bx bx-group"></i><p>No students</p></div>';return}c.innerHTML=s.map(x=>`<div class="student-card"><div class="student-info"><div class="student-avatar">${(x.name||x.email||'S')[0].toUpperCase()}</div><div><h4>${x.name||'Unknown'}</h4><span style="font-size:.8rem;color:var(--text-secondary)">${x.email}</span></div></div><div class="tests-count">📝 ${x.testsAttempted||0} Tests</div></div>`).join('')}
+        function updateStats(s){document.getElementById('totalStudents').textContent=s.length;document.getElementById('totalTaken').textContent=s.reduce((a,b)=>a+(parseInt(b.testsAttempted)||0),0);document.getElementById('activeToday').textContent=s.filter(x=>x.registeredAt&&new Date(x.registeredAt).toDateString()===new Date().toDateString()).length}
     </script>
 </body>
 </html>
