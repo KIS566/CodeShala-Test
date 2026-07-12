@@ -2,7 +2,7 @@
 // CODESHALA - Google Sheets API Integration
 // ============================================
 
-const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbx-mbZajgagNuSEpAj1N1FIW71ytFaZAEhKssxJEtQumZm1VjjU1IzgANdZy8uzqIvQ/exec";
+const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbxJbO1ZGN5FLUsUkExGOp_XLrNrdyqYASBA0iOYDi0J43R8Kc3hIB2HUM1AgIGbkp25/exec";
 
 // ============================================
 // CALL SHEET API - GET + POST Both (FIXED)
