@@ -4,10 +4,315 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - CodeShala</title>
+     <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <style>
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: var(--transition);
+            box-shadow: var(--shadow-xs);
+            cursor: default;
+        }
+        .stat-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-3px);
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        .stat-card.purple .stat-icon {
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            color: #6366f1;
+            box-shadow: 0 4px 12px rgba(99,102,241,0.15);
+        }
+        .stat-card.green .stat-icon {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: #10b981;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.15);
+        }
+        .stat-card.blue .stat-icon {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59,130,246,0.15);
+        }
+        .stat-card.orange .stat-icon {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            color: #f59e0b;
+            box-shadow: 0 4px 12px rgba(245,158,11,0.15);
+        }
+        .stat-card.gold .stat-icon {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            color: #d97706;
+            box-shadow: 0 4px 12px rgba(217,119,6,0.15);
+        }
+        .stat-number {
+            font-size: 1.7rem;
+            font-weight: 800;
+            display: block;
+            line-height: 1;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            margin-top: 4px;
+            display: block;
+        }
+        .stat-number.green { color: #10b981; }
+        .stat-number.orange { color: #f59e0b; }
+        .stat-number.purple { color: #6366f1; }
+        .stat-number.blue { color: #3b82f6; }
+        .stat-number.gold { color: #d97706; }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-xs);
+        }
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-header h2 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .view-all {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+        .view-all:hover {
+            color: var(--primary-dark);
+        }
+        .card-body {
+            padding: 8px 24px 20px;
+        }
+        
+        .test-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .test-item:last-child {
+            border-bottom: none;
+        }
+        .test-info h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+        .test-meta {
+            display: flex;
+            gap: 14px;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+        .test-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-badge.active {
+            background: #ecfdf5;
+            color: #059669;
+        }
+        .status-badge.draft {
+            background: #fffbeb;
+            color: #d97706;
+        }
+        
+        .btn-sm {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-decoration: none;
+            color: var(--text);
+            transition: var(--transition);
+        }
+        .btn-sm:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-outline {
+            background: white;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+            display: block;
+        }
+        .empty-state p {
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 16px;
+            background: var(--bg);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            text-decoration: none;
+            color: var(--text);
+            transition: var(--transition);
+        }
+        .quick-action:hover {
+            background: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(99,102,241,0.1);
+            transform: translateY(-2px);
+        }
+        .quick-action i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+        .quick-action span {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99,102,241,0.35);
+        }
+        
+        .loader-container {
+            text-align: center;
+            padding: 20px;
+        }
+        .loader {
+            width: 30px;
+            height: 30px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .content {
+                padding: 20px 16px;
+            }
+            .admin-email {
+                display: none;
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .quick-actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard">
@@ -20,97 +325,113 @@
                 </a>
                 <span class="admin-badge">Admin</span>
             </div>
-            
             <nav class="sidebar-nav">
-                <a href="dashboard.html" class="nav-item active">
-                    <i class='bx bxs-dashboard'></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="create-test.html" class="nav-item">
-                    <i class='bx bxs-plus-circle'></i>
-                    <span>Create Test</span>
-                </a>
-                <a href="add-questions.html" class="nav-item">
-                    <i class='bx bxs-help-circle'></i>
-                    <span>Add Questions</span>
-                </a>
-                <a href="view-results.html" class="nav-item">
-                    <i class='bx bxs-bar-chart-alt-2'></i>
-                    <span>View Results</span>
-                </a>
-                <a href="manage-students.html" class="nav-item">
-                    <i class='bx bxs-group'></i>
-                    <span>Students</span>
-                </a>
+                <a href="dashboard.html" class="nav-item active"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a>
+                <a href="create-test.html" class="nav-item"><i class='bx bxs-plus-circle'></i><span>Create Test</span></a>
+                <a href="add-questions.html" class="nav-item"><i class='bx bxs-help-circle'></i><span>Add Questions</span></a>
+                <a href="view-results.html" class="nav-item"><i class='bx bxs-bar-chart-alt-2'></i><span>View Results</span></a>
+                <a href="check-answers.html" class="nav-item"><i class='bx bxs-check-shield'></i><span>Check Answers</span></a>
+                <a href="manage-students.html" class="nav-item"><i class='bx bxs-group'></i><span>Students</span></a>
             </nav>
-            
             <div class="sidebar-footer">
-                <a href="#" onclick="logout()" class="nav-item logout">
-                    <i class='bx bxs-log-out-circle'></i>
-                    <span>Logout</span>
-                </a>
+                <a href="#" onclick="logout()" class="nav-item logout"><i class='bx bxs-log-out-circle'></i><span>Logout</span></a>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
             <header class="topbar">
-                <button class="menu-toggle" id="menuToggle">
-                    <i class='bx bx-menu'></i>
-                </button>
+                <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
+                <div class="search-bar">
+                    <i class='bx bx-search'></i>
+                    <input type="text" placeholder="Search tests..." id="searchTests" onkeyup="searchTests()">
+                </div>
                 <div class="topbar-right">
-                    <span class="admin-email" id="adminEmail">admin@codeshala.com</span>
-                    <div class="user-avatar admin-avatar">
-                        <span>A</span>
-                    </div>
+                    <span class="admin-email" id="adminEmail"></span>
+                    <div class="user-avatar admin-avatar"><span>A</span></div>
                 </div>
             </header>
 
             <div class="content">
+                <!-- Welcome Section -->
                 <div class="welcome-section">
                     <div class="welcome-text">
                         <h1>👨‍🏫 Admin Dashboard</h1>
-                        <p>Manage tests, questions, and monitor student progress.</p>
+                        <p>Manage tests, questions, and monitor student progress with complete marks management.</p>
                     </div>
                     <div class="welcome-actions">
-                        <a href="create-test.html" class="btn btn-primary">
-                            <i class='bx bx-plus'></i> Create New Test
-                        </a>
+                        <a href="create-test.html" class="btn-primary"><i class='bx bx-plus'></i> Create New Test</a>
+                        <button class="btn-primary" style="background:var(--bg);color:var(--text);box-shadow:none;border:1.5px solid var(--border);" onclick="refreshData()">
+                            <i class='bx bx-refresh'></i> Refresh
+                        </button>
                     </div>
                 </div>
 
-                <!-- Stats Cards -->
+                <!-- Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-card purple">
                         <div class="stat-icon"><i class='bx bxs-file'></i></div>
                         <div class="stat-info">
                             <span class="stat-number" id="totalTests">0</span>
-                            <span class="stat-label">Total Tests</span>
+                            <span class="stat-label">📋 Total Tests</span>
                         </div>
                     </div>
                     <div class="stat-card green">
                         <div class="stat-icon"><i class='bx bxs-help-circle'></i></div>
                         <div class="stat-info">
                             <span class="stat-number" id="totalQuestions">0</span>
-                            <span class="stat-label">Questions</span>
+                            <span class="stat-label">❓ Total Questions</span>
                         </div>
                     </div>
                     <div class="stat-card blue">
                         <div class="stat-icon"><i class='bx bxs-group'></i></div>
                         <div class="stat-info">
                             <span class="stat-number" id="totalStudents">0</span>
-                            <span class="stat-label">Students</span>
+                            <span class="stat-label">👥 Total Students</span>
                         </div>
                     </div>
                     <div class="stat-card orange">
                         <div class="stat-icon"><i class='bx bxs-check-circle'></i></div>
                         <div class="stat-info">
                             <span class="stat-number" id="testsTaken">0</span>
-                            <span class="stat-label">Tests Taken</span>
+                            <span class="stat-label">📝 Tests Taken</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Additional Stats -->
+                <div class="stats-grid" style="margin-bottom:32px;">
+                    <div class="stat-card gold">
+                        <div class="stat-icon"><i class='bx bxs-star'></i></div>
+                        <div class="stat-info">
+                            <span class="stat-number gold" id="avgPercentage">0%</span>
+                            <span class="stat-label">📊 Average Score</span>
+                        </div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon"><i class='bx bxs-trophy'></i></div>
+                        <div class="stat-info">
+                            <span class="stat-number green" id="passRate">0%</span>
+                            <span class="stat-label">✅ Pass Rate</span>
+                        </div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon"><i class='bx bxs-edit-alt'></i></div>
+                        <div class="stat-info">
+                            <span class="stat-number purple" id="pendingCheck">0</span>
+                            <span class="stat-label">⏳ Pending Checks</span>
+                        </div>
+                    </div>
+                    <div class="stat-card blue">
+                        <div class="stat-icon"><i class='bx bxs-check-shield'></i></div>
+                        <div class="stat-info">
+                            <span class="stat-number blue" id="checkedCount">0</span>
+                            <span class="stat-label">✅ Checked Answers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Grid -->
                 <div class="content-grid">
                     <!-- Recent Tests -->
                     <div class="card">
@@ -119,10 +440,8 @@
                             <a href="create-test.html" class="view-all">View All →</a>
                         </div>
                         <div class="card-body" id="recentTests">
-                            <div class="empty-state">
-                                <i class='bx bx-file'></i>
-                                <p>No tests created yet</p>
-                                <span>Create your first test to get started!</span>
+                            <div class="loader-container">
+                                <div class="loader"></div>
                             </div>
                         </div>
                     </div>
@@ -144,11 +463,11 @@
                                 </a>
                                 <a href="view-results.html" class="quick-action">
                                     <i class='bx bx-chart'></i>
-                                    <span>Results</span>
+                                    <span>View Results</span>
                                 </a>
-                                <a href="manage-students.html" class="quick-action">
-                                    <i class='bx bx-user-plus'></i>
-                                    <span>Students</span>
+                                <a href="check-answers.html" class="quick-action">
+                                    <i class='bx bx-check-shield'></i>
+                                    <span>Check Answers</span>
                                 </a>
                             </div>
                         </div>
@@ -158,11 +477,41 @@
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../assets/js/firebase-config.js"></script>
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
+
     <script>
+        // ============================================
+        // STATE
+        // ============================================
+        
+        let allTests = [];
+        let isLoading = false;
+
+        // ============================================
+        // DOM REFS
+        // ============================================
+        
+        const DOM = {
+            totalTests: document.getElementById('totalTests'),
+            totalQuestions: document.getElementById('totalQuestions'),
+            totalStudents: document.getElementById('totalStudents'),
+            testsTaken: document.getElementById('testsTaken'),
+            avgPercentage: document.getElementById('avgPercentage'),
+            passRate: document.getElementById('passRate'),
+            pendingCheck: document.getElementById('pendingCheck'),
+            checkedCount: document.getElementById('checkedCount'),
+            recentTests: document.getElementById('recentTests'),
+            adminEmail: document.getElementById('adminEmail')
+        };
+
+        // ============================================
+        // AUTH HANDLER
+        // ============================================
+        
         document.getElementById('menuToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('open');
         });
@@ -172,42 +521,212 @@
                 window.location.href = 'login.html';
                 return;
             }
-            
-            document.getElementById('adminEmail').textContent = user.email;
-            await loadAdminStats();
+            DOM.adminEmail.textContent = user.email;
+            await loadDashboardData();
         });
 
-        async function loadAdminStats() {
-            const stats = await callSheetAPI('getAdminStats');
-            if (stats) {
-                document.getElementById('totalTests').textContent = stats.totalTests || 0;
-                document.getElementById('totalQuestions').textContent = stats.totalQuestions || 0;
-                document.getElementById('totalStudents').textContent = stats.totalStudents || 0;
-                document.getElementById('testsTaken').textContent = stats.testsTaken || 0;
-            }
-            
-            const tests = await callSheetAPI('getAllTests');
-            if (tests && tests.length > 0) {
-                renderRecentTests(tests.slice(0, 5));
+        // ============================================
+        // LOAD DASHBOARD DATA
+        // ============================================
+        
+        async function loadDashboardData() {
+            if (isLoading) return;
+            isLoading = true;
+
+            try {
+                // Get all tests
+                allTests = await getAllTests();
+                const totalTests = allTests ? allTests.length : 0;
+
+                // Get all questions count
+                let totalQuestions = 0;
+                if (allTests && Array.isArray(allTests)) {
+                    for (const test of allTests) {
+                        const questions = await getTestQuestions(test.id);
+                        totalQuestions += questions ? questions.length : 0;
+                    }
+                }
+
+                // Get all results with calculations
+                const results = await getAllResultsWithCalculations();
+                const totalResults = results ? results.length : 0;
+
+                // Get unique students
+                const students = new Set();
+                if (results) {
+                    results.forEach(r => {
+                        if (r.studentEmail) students.add(r.studentEmail);
+                    });
+                }
+
+                // Calculate average percentage
+                let avgPct = 0;
+                let passCount = 0;
+                let pendingChecks = 0;
+                let checkedCount = 0;
+
+                if (results && results.length > 0) {
+                    const pcts = results.map(r => parseFloat(r.finalPercentage) || 0);
+                    avgPct = pcts.reduce((a, b) => a + b, 0) / pcts.length;
+                    passCount = pcts.filter(p => p >= 40).length;
+
+                    // Check pending vs checked
+                    results.forEach(r => {
+                        const subMarks = r.subjectiveMarks || {};
+                        const subTotal = r.subjectiveTotal || 0;
+                        if (subTotal > 0) {
+                            const hasMarks = Object.values(subMarks).some(m => m !== '' && m !== null && m !== undefined);
+                            if (hasMarks) {
+                                checkedCount++;
+                            } else {
+                                pendingChecks++;
+                            }
+                        }
+                    });
+                }
+
+                const passRate = totalResults > 0 ? (passCount / totalResults) * 100 : 0;
+
+                // Update stats
+                DOM.totalTests.textContent = totalTests;
+                DOM.totalQuestions.textContent = totalQuestions;
+                DOM.totalStudents.textContent = students.size;
+                DOM.testsTaken.textContent = totalResults;
+                DOM.avgPercentage.textContent = avgPct.toFixed(1) + '%';
+                DOM.passRate.textContent = passRate.toFixed(1) + '%';
+                DOM.pendingCheck.textContent = pendingChecks;
+                DOM.checkedCount.textContent = checkedCount;
+
+                // Render recent tests
+                renderRecentTests(allTests);
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                showToast('Error loading dashboard data', 'error');
+            } finally {
+                isLoading = false;
             }
         }
 
+        // ============================================
+        // RENDER RECENT TESTS
+        // ============================================
+        
         function renderRecentTests(tests) {
-            const html = tests.map(test => `
+            const container = DOM.recentTests;
+            
+            if (!tests || tests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class='bx bx-file'></i>
+                        <p>No tests created yet</p>
+                        <span style="font-size:0.82rem;color:var(--text-muted);">
+                            Create your first test to get started!
+                        </span>
+                    </div>
+                `;
+                return;
+            }
+
+            // Show only 5 most recent tests
+            const recent = tests.slice(0, 5);
+            
+            container.innerHTML = recent.map(test => `
                 <div class="test-item">
                     <div class="test-info">
                         <h3>${test.title}</h3>
                         <div class="test-meta">
-                            <span><i class='bx bx-time-five'></i> ${test.duration} mins</span>
-                            <span class="status-badge ${test.status}">${test.status}</span>
+                            <span><i class='bx bx-time-five'></i> ${test.duration || '?'} mins</span>
+                            <span class="status-badge ${test.status || 'draft'}">${test.status || 'draft'}</span>
+                            <span><i class='bx bx-calendar'></i> ${test.createdAt ? new Date(test.createdAt).toLocaleDateString() : 'N/A'}</span>
                         </div>
                     </div>
-                    <a href="add-questions.html?testId=${test.id}" class="btn btn-sm btn-outline">Add Qs</a>
+                    <a href="add-questions.html?testId=${test.id}" class="btn-sm btn-outline">Add Questions</a>
                 </div>
             `).join('');
-            
-            document.getElementById('recentTests').innerHTML = html;
         }
+
+        // ============================================
+        // SEARCH TESTS
+        // ============================================
+        
+        function searchTests() {
+            const query = document.getElementById('searchTests').value.toLowerCase().trim();
+            
+            if (!query) {
+                renderRecentTests(allTests);
+                return;
+            }
+            
+            const filtered = allTests.filter(test => 
+                test.title.toLowerCase().includes(query) ||
+                (test.description && test.description.toLowerCase().includes(query))
+            );
+            
+            renderRecentTests(filtered);
+        }
+
+        // ============================================
+        // REFRESH DATA
+        // ============================================
+        
+        async function refreshData() {
+            await loadDashboardData();
+            showToast('🔄 Dashboard refreshed!', 'info');
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 14px 24px;
+                border-radius: 12px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.5s ease;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ============================================
+        // AUTO REFRESH (Every 30 seconds)
+        // ============================================
+        
+        // Uncomment to enable auto-refresh
+        // setInterval(refreshData, 30000);
+
+        console.log('✅ Admin Dashboard Loaded Successfully!');
+        console.log('📊 All Tests:', allTests ? allTests.length : 0);
     </script>
 </body>
 </html>
