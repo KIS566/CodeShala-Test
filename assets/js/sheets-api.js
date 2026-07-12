@@ -5,7 +5,7 @@
 const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbx-mbZajgagNuSEpAj1N1FIW71ytFaZAEhKssxJEtQumZm1VjjU1IzgANdZy8uzqIvQ/exec";
 
 // ============================================
-// CALL SHEET API - GET + POST Both
+// CALL SHEET API - GET + POST Both (FIXED)
 // ============================================
 
 async function callSheetAPI(action, data = {}) {
@@ -13,9 +13,12 @@ async function callSheetAPI(action, data = {}) {
         const dataStr = JSON.stringify(data);
         const isLargeData = dataStr.length > 1500;
         
+        console.log(`📤 Sending API request: ${action}`);
+        console.log(`📊 Data size: ${dataStr.length} chars, ${isLargeData ? 'Using POST' : 'Using GET'}`);
+        
         if (isLargeData) {
             // 🔥 Use POST for large data
-            console.log(`📤 Sending large POST request: ${action}`);
+            console.log(`📤 Sending via POST (large data)...`);
             
             const response = await fetch(SHEETS_API_URL, {
                 method: 'POST',
@@ -41,6 +44,7 @@ async function callSheetAPI(action, data = {}) {
         } else {
             // ✅ Use GET for small data
             const url = `${SHEETS_API_URL}?action=${encodeURIComponent(action)}&data=${encodeURIComponent(dataStr)}`;
+            console.log(`📤 GET URL: ${url.substring(0, 200)}...`);
             
             const response = await fetch(url, {
                 method: 'GET',
@@ -64,6 +68,7 @@ async function callSheetAPI(action, data = {}) {
         return null;
     }
 }
+
 // ============================================
 // 🟢 GRADE CALCULATOR
 // ============================================
