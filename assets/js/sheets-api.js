@@ -2,44 +2,68 @@
 // CODESHALA - Google Sheets API Integration
 // ============================================
 
-const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbxLs7zKD-vTnJCXBdx7CaUE4LwVcA_E9BQ1r6ZXiNTtKZ1cKlMzqVHjqJnxJ687OGLd/exec";
+const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbx-mbZajgagNuSEpAj1N1FIW71ytFaZAEhKssxJEtQumZm1VjjU1IzgANdZy8uzqIvQ/exec";
 
 // ============================================
-// CALL SHEET API - GET METHOD ONLY (CORS-Friendly)
+// CALL SHEET API - GET + POST Both
 // ============================================
 
 async function callSheetAPI(action, data = {}) {
     try {
-        console.log(`📤 Sending API request: ${action}`, data);
-        
         const dataStr = JSON.stringify(data);
-        const encodedData = encodeURIComponent(dataStr);
+        const isLargeData = dataStr.length > 1500;
         
-        const url = `${SHEETS_API_URL}?action=${encodeURIComponent(action)}&data=${encodedData}`;
-        console.log(`📤 URL: ${url}`);
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json'
+        if (isLargeData) {
+            // 🔥 Use POST for large data
+            console.log(`📤 Sending large POST request: ${action}`);
+            
+            const response = await fetch(SHEETS_API_URL, {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: action,
+                    data: JSON.stringify(data)
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-        });
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const result = await response.json();
+            console.log(`📡 API Response (${action}):`, result);
+            return result;
+            
+        } else {
+            // ✅ Use GET for small data
+            const url = `${SHEETS_API_URL}?action=${encodeURIComponent(action)}&data=${encodeURIComponent(dataStr)}`;
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                mode: 'cors',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const result = await response.json();
+            console.log(`📡 API Response (${action}):`, result);
+            return result;
         }
-        
-        const result = await response.json();
-        console.log(`📡 API Response (${action}):`, result);
-        return result;
         
     } catch (error) {
         console.error('❌ Sheet API Error:', error);
         return null;
     }
 }
-
 // ============================================
 // 🟢 GRADE CALCULATOR
 // ============================================
