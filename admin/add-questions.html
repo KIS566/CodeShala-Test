@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Questions - CodeShala Admin</title>
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -17,24 +19,21 @@
             box-shadow: var(--shadow-xs);
             margin-bottom: 20px;
         }
-        
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
         }
-        
         .form-group {
             margin-bottom: 16px;
         }
-        
         .form-group label {
             display: block;
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: .85rem;
             margin-bottom: 6px;
+            color: var(--text);
         }
-        
         .form-group input,
         .form-group textarea,
         .form-group select {
@@ -43,30 +42,38 @@
             border: 1.5px solid var(--border);
             border-radius: 10px;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 0.9rem;
+            font-size: .9rem;
             background: var(--bg);
-            transition: var(--transition);
             outline: none;
+            color: var(--text);
         }
-        
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99,102,241,0.08);
+            box-shadow: 0 0 0 4px rgba(99,102,241,.08);
             background: white;
         }
-        
         .question-badge {
             display: inline-block;
             background: var(--primary-light);
             color: var(--primary);
             padding: 3px 10px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: .75rem;
             font-weight: 700;
             margin-right: 6px;
         }
+        .type-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: .75rem;
+            font-weight: 700;
+            margin-right: 6px;
+        }
+        .type-badge.mcq { background: #dbeafe; color: #2563eb; }
+        .type-badge.subjective { background: #fef3c7; color: #d97706; }
         
         .question-list-item {
             padding: 16px;
@@ -76,16 +83,161 @@
             background: var(--bg);
         }
         
-        .question-list-item strong {
-            display: block;
-            margin-bottom: 6px;
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transition);
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99,102,241,.35);
+        }
+        .btn-success {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            transition: var(--transition);
+        }
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: white;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
         }
         
-        @media (max-width: 768px) {
+        .bulk-textarea {
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: .85rem;
+            line-height: 1.8;
+            white-space: pre;
+        }
+        
+        .question-preview {
+            background: var(--bg);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: .85rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .tab-btn {
+            padding: 10px 24px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .tab-btn.active {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .tab-btn:hover {
+            border-color: var(--primary);
+        }
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .bulk-format-info {
+            background: #eef2ff;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+        }
+        .bulk-format-info code {
+            background: #1e1e2e;
+            color: #f0f0f5;
+            padding: 12px;
+            border-radius: 8px;
+            display: block;
+            font-family: 'Courier New', monospace;
+            font-size: .85rem;
+            white-space: pre-wrap;
+            margin-top: 8px;
+        }
+        
+        @media(max-width:768px) {
             .form-row {
                 grid-template-columns: 1fr;
             }
         }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            opacity: 0.4;
+            display: block;
+        }
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideIn 0.5s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .toast.success { background: #10b981; }
+        .toast.error { background: #ef4444; }
+        .toast.warning { background: #f59e0b; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        .loader { width: 30px; height: 30px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 10px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -103,6 +255,7 @@
                 <a href="create-test.html" class="nav-item"><i class='bx bxs-plus-circle'></i><span>Create Test</span></a>
                 <a href="add-questions.html" class="nav-item active"><i class='bx bxs-help-circle'></i><span>Add Questions</span></a>
                 <a href="view-results.html" class="nav-item"><i class='bx bxs-bar-chart-alt-2'></i><span>View Results</span></a>
+                <a href="check-answers.html" class="nav-item"><i class='bx bxs-check-shield'></i><span>Check Answers</span></a>
                 <a href="manage-students.html" class="nav-item"><i class='bx bxs-group'></i><span>Students</span></a>
             </nav>
             <div class="sidebar-footer">
@@ -113,13 +266,13 @@
         <main class="main-content">
             <header class="topbar">
                 <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
-                <span style="font-weight: 700;">Add Questions</span>
+                <span style="font-weight:700">Add Questions</span>
                 <span class="admin-email" id="adminEmail"></span>
             </header>
 
             <div class="content">
                 <!-- Select Test -->
-                <div class="form-card" id="selectTestCard">
+                <div class="form-card">
                     <h2>📋 Select Test</h2>
                     <div class="form-group">
                         <select id="testSelect" onchange="onTestSelect()">
@@ -128,66 +281,109 @@
                     </div>
                 </div>
 
-                <!-- Add Question Form -->
-                <div class="form-card" id="questionFormCard" style="display: none;">
-                    <h2>➕ Add New Question</h2>
-                    <form id="questionForm">
-                        <input type="hidden" id="selectedTestId">
-                        <div class="form-group">
-                            <label>Question *</label>
-                            <textarea id="qText" rows="2" placeholder="Enter your question here..." required></textarea>
-                        </div>
-                        <div class="form-row">
+                <!-- Add Question -->
+                <div class="form-card" id="questionFormCard" style="display:none">
+                    <h2>➕ Add Questions</h2>
+                    
+                    <!-- Tabs -->
+                    <div class="tab-header">
+                        <button class="tab-btn active" onclick="switchTab('single')">📝 Single Question</button>
+                        <button class="tab-btn" onclick="switchTab('bulk')">📦 Bulk Add</button>
+                    </div>
+
+                    <!-- Single Question Tab -->
+                    <div class="tab-content active" id="tabSingle">
+                        <form id="questionForm" novalidate>
+                            <input type="hidden" id="selectedTestId">
+                            
                             <div class="form-group">
-                                <label>Option A *</label>
-                                <input type="text" id="optA" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Option B *</label>
-                                <input type="text" id="optB" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Option C</label>
-                                <input type="text" id="optC">
-                            </div>
-                            <div class="form-group">
-                                <label>Option D</label>
-                                <input type="text" id="optD">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Correct Answer *</label>
-                                <select id="correctAns" required>
-                                    <option value="">Select</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="D">D</option>
+                                <label>Question Type *</label>
+                                <select id="qType" onchange="toggleQuestionType()">
+                                    <option value="mcq">📝 MCQ</option>
+                                    <option value="subjective">✍️ Subjective</option>
                                 </select>
                             </div>
+                            
                             <div class="form-group">
-                                <label>Marks</label>
-                                <input type="number" id="qMarks" value="1" min="1">
+                                <label>Question *</label>
+                                <textarea id="qText" rows="2" placeholder="Enter question..." required></textarea>
                             </div>
+                            
+                            <div id="mcqOptions">
+                                <div class="form-row">
+                                    <div class="form-group"><label>Option A</label><input type="text" id="optA"></div>
+                                    <div class="form-group"><label>Option B</label><input type="text" id="optB"></div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group"><label>Option C</label><input type="text" id="optC"></div>
+                                    <div class="form-group"><label>Option D</label><input type="text" id="optD"></div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Correct</label>
+                                        <select id="correctAns">
+                                            <option value="">Select</option>
+                                            <option value="A">A</option>
+                                            <option value="B">B</option>
+                                            <option value="C">C</option>
+                                            <option value="D">D</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Marks</label>
+                                        <input type="number" id="qMarks" value="1" min="1">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="subjectiveOptions" style="display:none">
+                                <div class="form-group">
+                                    <label>Expected Answer (optional reference)</label>
+                                    <textarea id="expectedAns" rows="3" placeholder="Reference answer for teachers..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Marks</label>
+                                    <input type="number" id="subMarks" value="5" min="1">
+                                </div>
+                            </div>
+                            
+                            <button type="submit" class="btn-primary">✅ Add Question</button>
+                        </form>
+                    </div>
+
+                    <!-- Bulk Add Tab -->
+                    <div class="tab-content" id="tabBulk">
+                        <div class="bulk-format-info">
+                            <strong>📝 Format:</strong> Ek line mein ek question likho. Fields ko <code>|</code> se separate karo.
+                            <code>
+MCQ | What is HTML? | A:Hyper Text | B:High Tech | C:Hyper Transfer | D:High Text | A | 1
+Subjective | Explain HTML in short. | 5
+                            </code>
+                            <small style="color:var(--text-muted);">
+                                <br>🔹 MCQ Format: <code>MCQ | Question | A:Option | B:Option | C:Option | D:Option | Correct | Marks</code>
+                                <br>🔹 Subjective Format: <code>Subjective | Question | Marks</code>
+                            </small>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px;">
-                            ✅ Add Question
-                        </button>
-                    </form>
+                        
+                        <div class="form-group">
+                            <label>📋 Questions (ek line mein ek)</label>
+                            <textarea id="bulkQuestions" class="bulk-textarea" placeholder="MCQ | What is HTML? | A:Hyper Text Markup Language | B:High Tech Modern Language | C:Hyper Transfer Markup Language | D:High Text Markup Language | A | 1&#10;MCQ | What does CSS stand for? | A:Cascading Style Sheets | B:Creative Style Sheets | C:Computer Style Sheets | D:Colorful Style Sheets | A | 1&#10;Subjective | Explain the box model in CSS. | 5"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>📊 Preview:</label>
+                            <div id="bulkPreview" class="question-preview">Paste questions above to preview...</div>
+                        </div>
+                        
+                        <button class="btn-success" onclick="addBulkQuestions()">📦 Add All Questions</button>
+                        <button class="btn-outline" onclick="clearBulk()" style="margin-top:10px;">🗑️ Clear</button>
+                    </div>
                 </div>
 
                 <!-- Questions List -->
-                <div class="form-card" id="questionsListCard" style="display: none;">
+                <div class="form-card" id="questionsListCard" style="display:none">
                     <h2>📝 Questions in this Test</h2>
-                    <div id="questionsList">
-                        <div class="empty-state">
-                            <i class='bx bx-help-circle'></i>
-                            <p>No questions added yet</p>
-                        </div>
-                    </div>
+                    <div id="questionsList"></div>
                 </div>
             </div>
         </main>
@@ -197,93 +393,384 @@
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
+
     <script>
+        // ============================================
+        // STATE
+        // ============================================
+        let currentTestId = null;
+        let isAdding = false;
+
+        // ============================================
+        // DOM REFS
+        // ============================================
+        const DOM = {
+            testSelect: document.getElementById('testSelect'),
+            questionFormCard: document.getElementById('questionFormCard'),
+            questionsListCard: document.getElementById('questionsListCard'),
+            questionsList: document.getElementById('questionsList'),
+            selectedTestId: document.getElementById('selectedTestId'),
+            qType: document.getElementById('qType'),
+            qText: document.getElementById('qText'),
+            optA: document.getElementById('optA'),
+            optB: document.getElementById('optB'),
+            optC: document.getElementById('optC'),
+            optD: document.getElementById('optD'),
+            correctAns: document.getElementById('correctAns'),
+            qMarks: document.getElementById('qMarks'),
+            expectedAns: document.getElementById('expectedAns'),
+            subMarks: document.getElementById('subMarks'),
+            bulkQuestions: document.getElementById('bulkQuestions'),
+            bulkPreview: document.getElementById('bulkPreview'),
+            adminEmail: document.getElementById('adminEmail')
+        };
+
+        // ============================================
+        // TOAST FUNCTION
+        // ============================================
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // ============================================
+        // AUTH & INIT
+        // ============================================
         document.getElementById('menuToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('open');
         });
 
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
-            document.getElementById('adminEmail').textContent = user.email;
+        auth.onAuthStateChanged(async (u) => {
+            if (!u) { window.location.href = 'login.html'; return; }
+            DOM.adminEmail.textContent = u.email;
             await loadTests();
             
-            // Check URL for testId
-            const params = new URLSearchParams(window.location.search);
-            const testId = params.get('testId');
-            if (testId) {
-                document.getElementById('testSelect').value = testId;
+            const p = new URLSearchParams(window.location.search);
+            const tid = p.get('testId');
+            if (tid) {
+                DOM.testSelect.value = tid;
                 onTestSelect();
             }
         });
 
+        // ============================================
+        // LOAD TESTS
+        // ============================================
         async function loadTests() {
-            const tests = await callSheetAPI('getAllTests');
-            const select = document.getElementById('testSelect');
-            if (tests) {
-                tests.forEach(t => {
-                    const opt = document.createElement('option');
-                    opt.value = t.id;
-                    opt.textContent = t.title;
-                    select.appendChild(opt);
+            const t = await getAllTests();
+            const s = DOM.testSelect;
+            if (t && Array.isArray(t)) {
+                t.forEach(x => {
+                    const o = document.createElement('option');
+                    o.value = x.id;
+                    o.textContent = x.title;
+                    s.appendChild(o);
                 });
             }
         }
 
+        // ============================================
+        // TEST SELECT
+        // ============================================
         function onTestSelect() {
-            const testId = document.getElementById('testSelect').value;
-            if (!testId) {
-                document.getElementById('questionFormCard').style.display = 'none';
-                document.getElementById('questionsListCard').style.display = 'none';
+            const tid = DOM.testSelect.value;
+            if (!tid) {
+                DOM.questionFormCard.style.display = 'none';
+                DOM.questionsListCard.style.display = 'none';
                 return;
             }
-            document.getElementById('selectedTestId').value = testId;
-            document.getElementById('questionFormCard').style.display = 'block';
-            document.getElementById('questionsListCard').style.display = 'block';
-            loadQuestions(testId);
+            currentTestId = tid;
+            DOM.selectedTestId.value = tid;
+            DOM.questionFormCard.style.display = 'block';
+            DOM.questionsListCard.style.display = 'block';
+            loadQuestions(tid);
         }
 
+        // ============================================
+        // TOGGLE QUESTION TYPE
+        // ============================================
+        function toggleQuestionType() {
+            const t = DOM.qType.value;
+            if (t === 'mcq') {
+                document.getElementById('mcqOptions').style.display = 'block';
+                document.getElementById('subjectiveOptions').style.display = 'none';
+            } else {
+                document.getElementById('mcqOptions').style.display = 'none';
+                document.getElementById('subjectiveOptions').style.display = 'block';
+            }
+        }
+
+        // ============================================
+        // TAB SWITCH
+        // ============================================
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            if (tab === 'single') {
+                document.getElementById('tabSingle').classList.add('active');
+                document.querySelector('.tab-btn:first-child').classList.add('active');
+            } else {
+                document.getElementById('tabBulk').classList.add('active');
+                document.querySelector('.tab-btn:last-child').classList.add('active');
+            }
+        }
+
+        // ============================================
+        // BULK PREVIEW
+        // ============================================
+        DOM.bulkQuestions.addEventListener('input', function() {
+            const lines = this.value.split('\n').filter(line => line.trim());
+            let preview = '';
+            lines.forEach((line, i) => {
+                const parts = line.split('|').map(p => p.trim());
+                if (parts.length >= 2) {
+                    const type = parts[0].toLowerCase();
+                    const question = parts[1];
+                    preview += `${i+1}. [${type.toUpperCase()}] ${question}\n`;
+                }
+            });
+            DOM.bulkPreview.textContent = preview || 'Paste questions above to preview...';
+        });
+
+        // ============================================
+        // ADD BULK QUESTIONS
+        // ============================================
+        async function addBulkQuestions() {
+            if (isAdding) return;
+            
+            const tid = DOM.selectedTestId.value;
+            if (!tid) {
+                showToast('Please select a test first!', 'error');
+                return;
+            }
+            
+            const text = DOM.bulkQuestions.value;
+            if (!text.trim()) {
+                showToast('Please paste some questions!', 'error');
+                return;
+            }
+            
+            const lines = text.split('\n').filter(line => line.trim());
+            if (lines.length === 0) {
+                showToast('No questions found!', 'error');
+                return;
+            }
+            
+            if (!confirm(`📦 ${lines.length} questions add karne hain. Continue?`)) return;
+            
+            isAdding = true;
+            let added = 0;
+            let errors = 0;
+            let errorMessages = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                const parts = line.split('|').map(p => p.trim());
+                
+                try {
+                    const type = parts[0].toLowerCase();
+                    
+                    if (type === 'mcq' || type === 'mcq') {
+                        // MCQ: MCQ | Question | A:Option | B:Option | C:Option | D:Option | Correct | Marks
+                        if (parts.length < 8) {
+                            errors++;
+                            errorMessages.push(`Line ${i+1}: Invalid MCQ format (need 8 fields)`);
+                            continue;
+                        }
+                        
+                        const qData = {
+                            id: 'Q_' + Date.now() + '_' + i,
+                            testId: tid,
+                            type: 'mcq',
+                            question: parts[1],
+                            optionA: parts[2].replace(/^A:/i, ''),
+                            optionB: parts[3].replace(/^B:/i, ''),
+                            optionC: parts[4].replace(/^C:/i, ''),
+                            optionD: parts[5].replace(/^D:/i, ''),
+                            correct: parts[6].toUpperCase(),
+                            marks: parseInt(parts[7]) || 1,
+                            expectedAnswer: ''
+                        };
+                        
+                        const result = await addQuestion(qData);
+                        if (result && result.success) {
+                            added++;
+                        } else {
+                            errors++;
+                            errorMessages.push(`Line ${i+1}: ${result?.error || 'Unknown error'}`);
+                        }
+                        
+                    } else if (type === 'subjective' || type === 'subjective') {
+                        // Subjective: Subjective | Question | Marks
+                        if (parts.length < 3) {
+                            errors++;
+                            errorMessages.push(`Line ${i+1}: Invalid Subjective format (need 3 fields)`);
+                            continue;
+                        }
+                        
+                        const qData = {
+                            id: 'Q_' + Date.now() + '_' + i,
+                            testId: tid,
+                            type: 'subjective',
+                            question: parts[1],
+                            optionA: '',
+                            optionB: '',
+                            optionC: '',
+                            optionD: '',
+                            correct: '',
+                            marks: parseInt(parts[2]) || 5,
+                            expectedAnswer: ''
+                        };
+                        
+                        const result = await addQuestion(qData);
+                        if (result && result.success) {
+                            added++;
+                        } else {
+                            errors++;
+                            errorMessages.push(`Line ${i+1}: ${result?.error || 'Unknown error'}`);
+                        }
+                        
+                    } else {
+                        errors++;
+                        errorMessages.push(`Line ${i+1}: Unknown type "${parts[0]}" (use MCQ or Subjective)`);
+                    }
+                    
+                } catch (error) {
+                    errors++;
+                    errorMessages.push(`Line ${i+1}: ${error.message}`);
+                }
+            }
+            
+            isAdding = false;
+            
+            let msg = `✅ ${added} questions added!`;
+            if (errors > 0) {
+                msg += ` ⚠️ ${errors} errors:\n${errorMessages.slice(0, 5).join('\n')}`;
+                if (errorMessages.length > 5) msg += `\n... and ${errorMessages.length - 5} more`;
+            }
+            showToast(msg, errors > 0 ? 'warning' : 'success');
+            
+            if (added > 0) {
+                DOM.bulkQuestions.value = '';
+                DOM.bulkPreview.textContent = 'Paste questions above to preview...';
+                loadQuestions(tid);
+            }
+        }
+
+        // ============================================
+        // CLEAR BULK
+        // ============================================
+        function clearBulk() {
+            DOM.bulkQuestions.value = '';
+            DOM.bulkPreview.textContent = 'Paste questions above to preview...';
+        }
+
+        // ============================================
+        // SINGLE QUESTION SUBMIT
+        // ============================================
         document.getElementById('questionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const qData = {
+            
+            const t = DOM.qType.value;
+            const tid = DOM.selectedTestId.value;
+            
+            if (!tid) {
+                showToast('Please select a test first!', 'error');
+                return;
+            }
+            
+            const qText = DOM.qText.value.trim();
+            if (!qText) {
+                showToast('Please enter a question!', 'error');
+                return;
+            }
+            
+            const d = {
                 id: 'Q_' + Date.now(),
-                testId: document.getElementById('selectedTestId').value,
-                question: document.getElementById('qText').value,
-                optionA: document.getElementById('optA').value,
-                optionB: document.getElementById('optB').value,
-                optionC: document.getElementById('optC').value,
-                optionD: document.getElementById('optD').value,
-                correct: document.getElementById('correctAns').value,
-                marks: document.getElementById('qMarks').value
+                testId: tid,
+                type: t,
+                question: qText,
+                marks: t === 'mcq' ? DOM.qMarks.value : DOM.subMarks.value,
+                optionA: '',
+                optionB: '',
+                optionC: '',
+                optionD: '',
+                correct: '',
+                expectedAnswer: ''
             };
             
-            const result = await callSheetAPI('addQuestion', qData);
+            if (t === 'mcq') {
+                if (!DOM.optA.value.trim() || !DOM.optB.value.trim()) {
+                    showToast('Option A and B are required for MCQ!', 'error');
+                    return;
+                }
+                if (!DOM.correctAns.value) {
+                    showToast('Please select correct answer!', 'error');
+                    return;
+                }
+                d.optionA = DOM.optA.value.trim();
+                d.optionB = DOM.optB.value.trim();
+                d.optionC = DOM.optC.value.trim();
+                d.optionD = DOM.optD.value.trim();
+                d.correct = DOM.correctAns.value;
+            } else {
+                d.expectedAnswer = DOM.expectedAns.value.trim();
+            }
+            
+            const result = await addQuestion(d);
             if (result && result.success) {
                 document.getElementById('questionForm').reset();
-                document.getElementById('qMarks').value = '1';
-                loadQuestions(qData.testId);
+                DOM.qMarks.value = '1';
+                DOM.subMarks.value = '5';
+                document.getElementById('mcqOptions').style.display = 'block';
+                document.getElementById('subjectiveOptions').style.display = 'none';
+                DOM.qType.value = 'mcq';
+                showToast('✅ Question added!', 'success');
+                loadQuestions(d.testId);
+            } else {
+                showToast('❌ Error adding question!', 'error');
             }
         });
 
-        async function loadQuestions(testId) {
-            const questions = await callSheetAPI('getTestQuestions', { testId });
-            const container = document.getElementById('questionsList');
+        // ============================================
+        // LOAD QUESTIONS
+        // ============================================
+        async function loadQuestions(tid) {
+            const q = await getTestQuestions(tid);
+            const c = DOM.questionsList;
             
-            if (questions && questions.length > 0) {
-                container.innerHTML = questions.map((q, i) => `
+            if (q && q.length > 0) {
+                c.innerHTML = q.map((x, i) => `
                     <div class="question-list-item">
-                        <strong>Q${i+1}. ${q.question}</strong>
-                        <span class="question-badge">✅ ${q.correct}</span>
-                        <span class="question-badge">⭐ ${q.marks || 1} mark</span>
-                        <br>
-                        <small style="color: var(--text-secondary);">
-                            A: ${q.optionA} | B: ${q.optionB} | C: ${q.optionC || '-'} | D: ${q.optionD || '-'}
-                        </small>
+                        <strong>Q${i+1}. ${x.question}</strong>
+                        <span class="type-badge ${x.type || 'mcq'}">
+                            ${x.type === 'subjective' ? '✍️ Subjective' : '📝 MCQ'}
+                        </span>
+                        <span class="question-badge">⭐ ${x.marks || 1} mark</span>
+                        ${x.type === 'mcq' ? 
+                            `<span class="question-badge">✅ ${x.correct}</span>
+                            <br><small>A: ${x.optionA} | B: ${x.optionB}${x.optionC ? ' | C: '+x.optionC : ''}${x.optionD ? ' | D: '+x.optionD : ''}</small>` :
+                            `<br><small>Reference: ${x.expectedAnswer || 'None'}</small>`
+                        }
                     </div>
                 `).join('');
             } else {
-                container.innerHTML = '<div class="empty-state"><i class="bx bx-help-circle"></i><p>No questions added yet</p></div>';
+                c.innerHTML = '<div class="empty-state"><i class="bx bx-help-circle"></i><p>No questions yet. Add your first question!</p></div>';
             }
         }
+
+        console.log('✅ Add Questions Page Loaded Successfully!');
     </script>
 </body>
 </html>
