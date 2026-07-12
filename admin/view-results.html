@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Results - CodeShala Admin</title>
+    <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -14,29 +18,58 @@
             gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            padding: 16px 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-xs);
         }
-        
-        .filter-bar select,
-        .filter-bar input {
+        .filter-bar select, .filter-bar input {
             padding: 10px 16px;
             border: 1.5px solid var(--border);
             border-radius: 10px;
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: white;
-            font-size: 0.88rem;
             outline: none;
-            transition: var(--transition);
+            font-size: .88rem;
         }
-        
-        .filter-bar select:focus,
-        .filter-bar input:focus {
+        .filter-bar select:focus, .filter-bar input:focus {
             border-color: var(--primary);
         }
-        
         .filter-bar input {
             flex: 1;
             min-width: 200px;
         }
+        
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-xs);
+        }
+        .stat-box .number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+        .stat-box .label {
+            font-size: .78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .stat-box .number.green { color: #10b981; }
+        .stat-box .number.orange { color: #f59e0b; }
+        .stat-box .number.red { color: #ef4444; }
         
         .table-card {
             background: white;
@@ -44,85 +77,138 @@
             border-radius: var(--radius-xl);
             overflow: hidden;
             box-shadow: var(--shadow-xs);
-            margin-bottom: 20px;
         }
-        
-        .table-card h3 {
-            padding: 20px 24px;
+        .table-card .table-header {
+            padding: 18px 24px;
             border-bottom: 1px solid var(--border-light);
-            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        
+        .table-card .table-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .table-card .table-header .result-count {
+            font-size: .85rem;
+            color: var(--text-secondary);
+        }
+        .table-responsive {
+            overflow-x: auto;
+            padding: 0;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: .88rem;
         }
-        
         thead th {
             background: var(--bg);
             padding: 12px 16px;
             text-align: left;
             font-weight: 600;
-            font-size: 0.8rem;
+            font-size: .78rem;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            border-bottom: 2px solid var(--border);
+            white-space: nowrap;
         }
-        
         tbody td {
-            padding: 14px 16px;
+            padding: 12px 16px;
             border-bottom: 1px solid var(--border-light);
-            font-size: 0.88rem;
+            vertical-align: middle;
         }
-        
         tbody tr:hover {
             background: var(--bg);
         }
-        
-        .table-responsive {
-            overflow-x: auto;
+        tbody tr:last-child td {
+            border-bottom: none;
         }
         
-        .stats-mini {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 14px;
-            margin-bottom: 20px;
+        .score-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: .78rem;
+            display: inline-block;
         }
+        .score-badge.excellent { background: #d1fae5; color: #059669; }
+        .score-badge.good { background: #dbeafe; color: #2563eb; }
+        .score-badge.average { background: #fef3c7; color: #d97706; }
+        .score-badge.needs-work { background: #fee2e2; color: #dc2626; }
+        .score-badge.pending { background: #f3f4f6; color: #6b7280; }
         
-        .stat-mini {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px;
+        .grade-badge {
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: .85rem;
+        }
+        .grade-badge.Aplus { background: #d1fae5; color: #059669; }
+        .grade-badge.A { background: #dbeafe; color: #2563eb; }
+        .grade-badge.Bplus { background: #fef3c7; color: #d97706; }
+        .grade-badge.B { background: #fef3c7; color: #d97706; }
+        .grade-badge.Cplus { background: #fde68a; color: #92400e; }
+        .grade-badge.C { background: #fca5a5; color: #991b1b; }
+        .grade-badge.F { background: #fecaca; color: #991b1b; }
+        .grade-badge.Pending { background: #f3f4f6; color: #6b7280; }
+        
+        .empty-state {
             text-align: center;
-            box-shadow: var(--shadow-xs);
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            opacity: .4;
+            display: block;
+        }
+        .empty-state p {
+            font-size: 1rem;
         }
         
-        .stat-mini .val {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary);
+        .loader-container {
+            text-align: center;
+            padding: 40px;
         }
-        
-        .stat-mini .lbl {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
+        .loader {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         @media (max-width: 768px) {
-            .stats-mini {
+            .stats-summary {
                 grid-template-columns: repeat(2, 1fr);
             }
             .filter-bar {
                 flex-direction: column;
+            }
+            .filter-bar select, .filter-bar input {
+                width: 100%;
+            }
+        }
+        @media (max-width: 500px) {
+            .stats-summary {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
+        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="../index.html" class="logo">
@@ -136,6 +222,7 @@
                 <a href="create-test.html" class="nav-item"><i class='bx bxs-plus-circle'></i><span>Create Test</span></a>
                 <a href="add-questions.html" class="nav-item"><i class='bx bxs-help-circle'></i><span>Add Questions</span></a>
                 <a href="view-results.html" class="nav-item active"><i class='bx bxs-bar-chart-alt-2'></i><span>View Results</span></a>
+                <a href="check-answers.html" class="nav-item"><i class='bx bxs-check-shield'></i><span>Check Answers</span></a>
                 <a href="manage-students.html" class="nav-item"><i class='bx bxs-group'></i><span>Students</span></a>
             </nav>
             <div class="sidebar-footer">
@@ -143,45 +230,55 @@
             </div>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
             <header class="topbar">
                 <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
-                <span style="font-weight: 700;">Student Results</span>
+                <span style="font-weight:700">📊 Student Results</span>
                 <span class="admin-email" id="adminEmail"></span>
             </header>
 
             <div class="content">
-                <!-- Stats Mini -->
-                <div class="stats-mini">
-                    <div class="stat-mini">
-                        <div class="val" id="totalSub">0</div>
-                        <div class="lbl">Total Submissions</div>
+                <!-- Stats Summary -->
+                <div class="stats-summary" id="statsSummary">
+                    <div class="stat-box">
+                        <span class="number" id="totalSubmissions">0</span>
+                        <span class="label">📝 Total Submissions</span>
                     </div>
-                    <div class="stat-mini">
-                        <div class="val" id="avgScore">0%</div>
-                        <div class="lbl">Average Score</div>
+                    <div class="stat-box">
+                        <span class="number" id="avgScore">0%</span>
+                        <span class="label">📊 Average Score</span>
                     </div>
-                    <div class="stat-mini">
-                        <div class="val" id="highScore">0%</div>
-                        <div class="lbl">Highest Score</div>
+                    <div class="stat-box">
+                        <span class="number green" id="highestScore">0%</span>
+                        <span class="label">🏆 Highest Score</span>
                     </div>
-                    <div class="stat-mini">
-                        <div class="val" id="passRate">0%</div>
-                        <div class="lbl">Pass Rate</div>
+                    <div class="stat-box">
+                        <span class="number orange" id="passRate">0%</span>
+                        <span class="label">✅ Pass Rate</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="number" id="avgSubScore">0</span>
+                        <span class="label">✍️ Avg Subjective</span>
                     </div>
                 </div>
 
-                <!-- Filter -->
+                <!-- Filter Bar -->
                 <div class="filter-bar">
-                    <select id="testFilter" onchange="applyFilter()">
-                        <option value="all">All Tests</option>
+                    <select id="testFilter" onchange="applyFilters()">
+                        <option value="all">📋 All Tests</option>
                     </select>
-                    <input type="text" id="searchInput" placeholder="🔍 Search by email or test name..." onkeyup="applyFilter()">
+                    <input type="text" id="searchInput" placeholder="🔍 Search by student name or email..." onkeyup="applyFilters()">
+                    <button class="btn btn-sm btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+                    <button class="btn btn-sm btn-outline" onclick="refreshData()">🔄 Refresh</button>
                 </div>
 
                 <!-- Results Table -->
                 <div class="table-card">
-                    <h3>📋 All Submissions</h3>
+                    <div class="table-header">
+                        <h3>📋 All Submissions</h3>
+                        <span class="result-count" id="resultCount">Showing 0 results</span>
+                    </div>
                     <div class="table-responsive">
                         <table>
                             <thead>
@@ -189,14 +286,25 @@
                                     <th>#</th>
                                     <th>Student</th>
                                     <th>Test</th>
-                                    <th>Score</th>
+                                    <th>📝 MCQ</th>
+                                    <th>✍️ Subjective</th>
+                                    <th>📊 Total</th>
                                     <th>%</th>
+                                    <th>Grade</th>
                                     <th>Status</th>
                                     <th>Date</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="resultsBody">
-                                <tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">Loading...</td></tr>
+                                <tr>
+                                    <td colspan="11">
+                                        <div class="loader-container">
+                                            <div class="loader"></div>
+                                            <p style="margin-top:12px;color:var(--text-secondary);">Loading results...</p>
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -205,114 +313,412 @@
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="../assets/js/firebase-config.js"></script>
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
-    <script>
-        let allResults = [];
 
+    <script>
+        // ============================================
+        // STATE
+        // ============================================
+        
+        let allResults = [];
+        let filteredResults = [];
+        let isLoading = false;
+
+        // ============================================
+        // DOM REFS
+        // ============================================
+        
+        const DOM = {
+            testFilter: document.getElementById('testFilter'),
+            searchInput: document.getElementById('searchInput'),
+            resultsBody: document.getElementById('resultsBody'),
+            totalSubmissions: document.getElementById('totalSubmissions'),
+            avgScore: document.getElementById('avgScore'),
+            highestScore: document.getElementById('highestScore'),
+            passRate: document.getElementById('passRate'),
+            avgSubScore: document.getElementById('avgSubScore'),
+            resultCount: document.getElementById('resultCount'),
+            adminEmail: document.getElementById('adminEmail')
+        };
+
+        // ============================================
+        // AUTH HANDLER
+        // ============================================
+        
         document.getElementById('menuToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('open');
         });
 
         auth.onAuthStateChanged(async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
-            document.getElementById('adminEmail').textContent = user.email;
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            DOM.adminEmail.textContent = user.email;
             await loadData();
         });
 
+        // ============================================
+        // LOAD DATA
+        // ============================================
+        
         async function loadData() {
-            // Load tests for filter
-            const tests = await callSheetAPI('getAllTests');
-            const filter = document.getElementById('testFilter');
-            if (tests) {
-                tests.forEach(t => {
-                    const opt = document.createElement('option');
-                    opt.value = t.id;
-                    opt.textContent = t.title;
-                    filter.appendChild(opt);
-                });
+            if (isLoading) return;
+            isLoading = true;
+
+            try {
+                // Load tests for filter
+                const tests = await getAllTests();
+                if (tests && Array.isArray(tests)) {
+                    DOM.testFilter.innerHTML = '<option value="all">📋 All Tests</option>';
+                    tests.forEach(test => {
+                        const opt = document.createElement('option');
+                        opt.value = test.id;
+                        opt.textContent = test.title;
+                        DOM.testFilter.appendChild(opt);
+                    });
+                }
+
+                // Load all results with calculations
+                allResults = await getAllResultsWithCalculations();
+                
+                // Sort by date (newest first)
+                allResults.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+                
+                applyFilters();
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                showToast('Error loading results', 'error');
+            } finally {
+                isLoading = false;
             }
-            
-            // Load all results
-            const resultData = await callSheetAPI('getAllResults') || [];
-allResults = Array.isArray(resultData) ? resultData : [];
-            renderResults(allResults);
-            updateStats(allResults);
         }
 
-        function applyFilter() {
-            const testId = document.getElementById('testFilter').value;
-            const search = document.getElementById('searchInput').value.toLowerCase();
+        // ============================================
+        // APPLY FILTERS
+        // ============================================
+        
+        function applyFilters() {
+            const testId = DOM.testFilter.value;
+            const search = DOM.searchInput.value.toLowerCase().trim();
             
-            let filtered = allResults;
+            filteredResults = allResults.filter(r => {
+                // Filter by test
+                if (testId !== 'all' && r.testId !== testId) {
+                    return false;
+                }
+                
+                // Filter by search
+                if (search) {
+                    const email = (r.studentEmail || '').toLowerCase();
+                    const name = (r.studentName || '').toLowerCase();
+                    const title = (r.testTitle || '').toLowerCase();
+                    if (!email.includes(search) && !name.includes(search) && !title.includes(search)) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            });
             
-            if (testId !== 'all') {
-                filtered = filtered.filter(r => r.testId === testId);
-            }
+            renderResults(filteredResults);
+            updateStats(filteredResults);
             
-            if (search) {
-                filtered = filtered.filter(r => 
-                    (r.studentEmail || '').toLowerCase().includes(search) ||
-                    (r.testTitle || '').toLowerCase().includes(search)
-                );
-            }
-            
-            renderResults(filtered);
+            DOM.resultCount.textContent = `Showing ${filteredResults.length} results`;
         }
 
+        // ============================================
+        // RENDER RESULTS
+        // ============================================
+        
         function renderResults(results) {
-            const tbody = document.getElementById('resultsBody');
+            const tbody = DOM.resultsBody;
             
             if (!results || results.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--text-muted);">No results found</td></tr>';
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="11">
+                            <div class="empty-state">
+                                <i class='bx bx-bar-chart-alt-2'></i>
+                                <p>No results found</p>
+                                <span style="font-size:0.85rem;color:var(--text-muted);">
+                                    Try changing your filters or wait for students to submit tests.
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
             
             tbody.innerHTML = results.map((r, i) => {
-                const pct = parseFloat(r.percentage);
-                let statusBadge = '';
-                if (pct >= 80) statusBadge = '<span class="score-badge excellent">Excellent</span>';
-                else if (pct >= 60) statusBadge = '<span class="score-badge good">Good</span>';
-                else if (pct >= 40) statusBadge = '<span class="score-badge average">Average</span>';
-                else statusBadge = '<span class="score-badge needs-work">Needs Work</span>';
+                // Calculate subjective score
+                const subMarks = r.subjectiveMarks || {};
+                const subScore = Object.values(subMarks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+                const subTotal = r.subjectiveTotal || 0;
+                
+                // Get status
+                const hasSubjective = subTotal > 0;
+                const hasMarks = Object.values(subMarks).some(m => m !== '' && m !== null && m !== undefined);
+                const isChecked = hasMarks || !hasSubjective;
+                
+                // Get grade class
+                const gradeClass = getGradeClass(r.grade || 'Pending');
                 
                 return `
                     <tr>
                         <td>${i + 1}</td>
-                        <td>${r.studentEmail || 'N/A'}</td>
-                        <td>${r.testTitle}</td>
-                        <td><strong>${r.score}/${r.total}</strong></td>
-                        <td><span class="score-badge ${getBadgeClass(pct)}">${r.percentage}%</span></td>
-                        <td>${statusBadge}</td>
-                        <td>${new Date(r.submittedAt).toLocaleDateString()}</td>
+                        <td>
+                            <strong>${r.studentEmail || 'N/A'}</strong>
+                            ${r.studentName ? `<br><small style="color:var(--text-muted)">${r.studentName}</small>` : ''}
+                        </td>
+                        <td>${r.testTitle || 'N/A'}</td>
+                        <td>
+                            <span class="score-badge ${getScoreClass(r.mcqScore, r.mcqTotal)}">
+                                ${r.mcqScore || 0}/${r.mcqTotal || 0}
+                            </span>
+                        </td>
+                        <td>
+                            ${hasSubjective ? 
+                                `<span class="score-badge ${isChecked ? 'good' : 'pending'}">
+                                    ${isChecked ? `${subScore.toFixed(1)}/${subTotal}` : '--/' + subTotal}
+                                </span>` :
+                                '<span style="color:var(--text-muted)">N/A</span>'
+                            }
+                        </td>
+                        <td>
+                            <strong>${r.totalScore || 0}/${r.maxScore || 0}</strong>
+                        </td>
+                        <td>
+                            <span class="score-badge ${getScoreClass(r.finalPercentage)}">
+                                ${r.finalPercentage || 0}%
+                            </span>
+                        </td>
+                        <td>
+                            <span class="grade-badge ${gradeClass}">
+                                ${r.grade || 'Pending'}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-badge ${isChecked ? 'active' : 'draft'}">
+                                ${isChecked ? '✅ Checked' : '⏳ Pending'}
+                            </span>
+                        </td>
+                        <td>${r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() : 'N/A'}</td>
+                        <td>
+                            ${hasSubjective && !isChecked ? 
+                                `<a href="check-answers.html" class="btn btn-sm btn-primary">✍️ Check</a>` :
+                                `<span style="color:var(--text-muted);font-size:0.75rem;">Done</span>`
+                            }
+                        </td>
                     </tr>
                 `;
             }).join('');
         }
 
+        // ============================================
+        // UPDATE STATS
+        // ============================================
+        
         function updateStats(results) {
-            document.getElementById('totalSub').textContent = results.length;
+            const total = results.length;
             
-            if (results.length > 0) {
-                const pcts = results.map(r => parseFloat(r.percentage));
-                const avg = (pcts.reduce((a,b) => a+b, 0) / pcts.length).toFixed(1);
-                const high = Math.max(...pcts).toFixed(1);
-                const passed = pcts.filter(p => p >= 40).length;
-                
-                document.getElementById('avgScore').textContent = avg + '%';
-                document.getElementById('highScore').textContent = high + '%';
-                document.getElementById('passRate').textContent = ((passed / results.length) * 100).toFixed(1) + '%';
+            if (total === 0) {
+                DOM.totalSubmissions.textContent = '0';
+                DOM.avgScore.textContent = '0%';
+                DOM.highestScore.textContent = '0%';
+                DOM.passRate.textContent = '0%';
+                DOM.avgSubScore.textContent = '0';
+                return;
             }
+            
+            // Calculate stats
+            const percentages = results.map(r => parseFloat(r.finalPercentage) || 0);
+            const avg = percentages.reduce((a, b) => a + b, 0) / total;
+            const highest = Math.max(...percentages);
+            const passed = percentages.filter(p => p >= 40).length;
+            const passRate = (passed / total) * 100;
+            
+            // Average subjective score
+            let totalSubScore = 0;
+            let subCount = 0;
+            results.forEach(r => {
+                const subMarks = r.subjectiveMarks || {};
+                const subScore = Object.values(subMarks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+                if (subScore > 0 || Object.keys(subMarks).length > 0) {
+                    totalSubScore += subScore;
+                    subCount++;
+                }
+            });
+            const avgSub = subCount > 0 ? totalSubScore / subCount : 0;
+            
+            // Update UI
+            DOM.totalSubmissions.textContent = total;
+            DOM.avgScore.textContent = avg.toFixed(1) + '%';
+            DOM.highestScore.textContent = highest.toFixed(1) + '%';
+            DOM.passRate.textContent = passRate.toFixed(1) + '%';
+            DOM.avgSubScore.textContent = avgSub.toFixed(1);
         }
 
-        function getBadgeClass(pct) {
-            if (pct >= 80) return 'excellent';
-            if (pct >= 60) return 'good';
-            if (pct >= 40) return 'average';
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        
+        function getScoreClass(value, max) {
+            if (max !== undefined && max > 0) {
+                const pct = (parseFloat(value) / parseFloat(max)) * 100;
+                return getScoreClass(pct);
+            }
+            const p = parseFloat(value) || 0;
+            if (p >= 80) return 'excellent';
+            if (p >= 60) return 'good';
+            if (p >= 40) return 'average';
             return 'needs-work';
         }
+
+        function getGradeClass(grade) {
+            if (!grade || grade === 'Pending') return 'Pending';
+            const map = {
+                'A+': 'Aplus',
+                'A': 'A',
+                'B+': 'Bplus',
+                'B': 'B',
+                'C+': 'Cplus',
+                'C': 'C',
+                'F': 'F'
+            };
+            return map[grade] || 'Pending';
+        }
+
+        // ============================================
+        // EXPORT CSV
+        // ============================================
+        
+        function exportCSV() {
+            if (!filteredResults || filteredResults.length === 0) {
+                showToast('No data to export', 'warning');
+                return;
+            }
+            
+            // CSV headers
+            const headers = [
+                'Student Email',
+                'Test Title',
+                'MCQ Score',
+                'MCQ Total',
+                'Subjective Score',
+                'Subjective Total',
+                'Total Score',
+                'Max Score',
+                'Percentage',
+                'Grade',
+                'Status',
+                'Submitted Date'
+            ];
+            
+            // Build CSV rows
+            const rows = filteredResults.map(r => {
+                const subMarks = r.subjectiveMarks || {};
+                const subScore = Object.values(subMarks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+                const subTotal = r.subjectiveTotal || 0;
+                const hasMarks = Object.values(subMarks).some(m => m !== '' && m !== null && m !== undefined);
+                const isChecked = hasMarks || subTotal === 0;
+                
+                return [
+                    r.studentEmail || 'N/A',
+                    r.testTitle || 'N/A',
+                    r.mcqScore || 0,
+                    r.mcqTotal || 0,
+                    subScore.toFixed(1),
+                    subTotal || 0,
+                    r.totalScore || 0,
+                    r.maxScore || 0,
+                    r.finalPercentage || 0,
+                    r.grade || 'Pending',
+                    isChecked ? 'Checked' : 'Pending',
+                    r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() : 'N/A'
+                ];
+            });
+            
+            // Combine headers and rows
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.join(','))
+            ].join('\n');
+            
+            // Download
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `results_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('📥 CSV exported successfully!', 'success');
+        }
+
+        // ============================================
+        // REFRESH DATA
+        // ============================================
+        
+        async function refreshData() {
+            await loadData();
+            showToast('🔄 Data refreshed!', 'info');
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            toast.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 14px 24px;
+                border-radius: 12px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.5s ease;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            `;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Add animation styles
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('✅ View Results Page Loaded Successfully!');
+        console.log('📊 Total Results:', allResults.length);
     </script>
 </body>
 </html>
