@@ -1,24 +1,34 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Login - CodeShala</title>
+     <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/auth-style.css">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <!-- Firebase -->
+    <link href='https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <style>
+        .social-icons{display:flex;justify-content:center;gap:12px}
+        .social-icons a{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:2px solid rgba(255,255,255,0.2);border-radius:10px;font-size:14px;font-weight:500;text-decoration:none;color:#fff;transition:all 0.3s ease}
+        .social-icons a img{width:22px;height:22px;object-fit:contain}
+        .social-icons a:hover{transform:translateY(-2px)}
+        .social-icons a.google-btn{border-color:#ea4335;background:rgba(234,67,53,0.1)}
+        .social-icons a.google-btn:hover{background:rgba(234,67,53,0.25);box-shadow:0 4px 15px rgba(234,67,53,0.3)}
+        .social-icons a.phone-btn{border-color:#10b981;background:rgba(16,185,129,0.1)}
+        .social-icons a.phone-btn:hover{background:rgba(16,185,129,0.25);box-shadow:0 4px 15px rgba(16,185,129,0.3)}
+    </style>
 </head>
 <body>
     <div class="container">
-        <!-- Login Form -->
         <div class="form-box login">
             <form id="loginForm">
                 <h1>🎓 Student Login</h1>
                 <p>Welcome back! Please login to continue.</p>
-                
                 <div class="input-box">
                     <input type="email" id="loginEmail" placeholder="Email" required>
                     <i class='bx bxs-envelope'></i>
@@ -27,124 +37,155 @@
                     <input type="password" id="loginPassword" placeholder="Password" required>
                     <i class='bx bxs-lock-alt'></i>
                 </div>
-                <div class="forgot-link">
-                    <a href="#">Forgot Password?</a>
-                </div>
+                <div class="forgot-link"><a href="#" onclick="forgotPassword()">Forgot Password?</a></div>
                 <button type="submit" class="btn">Login</button>
                 <p class="error-msg" id="loginError"></p>
-                
-                <div class="divider">
-                    <span>or continue with</span>
-                </div>
+                <div class="divider"><span>or continue with</span></div>
                 <div class="social-icons">
-                    <a href="#"><i class='bx bxl-google'></i></a>
-                    <a href="#"><i class='bx bxl-github'></i></a>
+                    <a href="#" onclick="googleLogin()" class="google-btn">
+                        <img src="../assets/images/google-icon.png" alt="Google" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22%23ea4335%22 d=%22M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z%22/></svg>';this.style.width='22px';this.style.height='22px'">
+                        Google
+                    </a>
+                    <a href="#" onclick="phoneLogin()" class="phone-btn">
+                        <img src="../assets/images/phone-icon.png" alt="Phone" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22%2310b981%22 d=%22M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z%22/></svg>';this.style.width='22px';this.style.height='22px'">
+                        Phone
+                    </a>
                 </div>
             </form>
         </div>
 
-        <!-- Register Form -->
         <div class="form-box register">
             <form id="signupForm">
                 <h1>📝 Create Account</h1>
                 <p>Join CodeShala and start testing!</p>
-                
-                <div class="input-box">
-                    <input type="text" id="signupName" placeholder="Full Name" required>
-                    <i class='bx bxs-user'></i>
-                </div>
-                <div class="input-box">
-                    <input type="email" id="signupEmail" placeholder="Email" required>
-                    <i class='bx bxs-envelope'></i>
-                </div>
-                <div class="input-box">
-                    <input type="password" id="signupPassword" placeholder="Password (6+ characters)" required>
-                    <i class='bx bxs-lock-alt'></i>
-                </div>
+                <div class="input-box"><input type="text" id="signupName" placeholder="Full Name" required><i class='bx bxs-user'></i></div>
+                <div class="input-box"><input type="email" id="signupEmail" placeholder="Email" required><i class='bx bxs-envelope'></i></div>
+                <div class="input-box"><input type="password" id="signupPassword" placeholder="Password (6+ characters)" required><i class='bx bxs-lock-alt'></i></div>
                 <button type="submit" class="btn">Register</button>
                 <p class="error-msg" id="signupError"></p>
-                
-                <div class="divider">
-                    <span>or continue with</span>
-                </div>
+                <div class="divider"><span>or continue with</span></div>
                 <div class="social-icons">
-                    <a href="#"><i class='bx bxl-google'></i></a>
-                    <a href="#"><i class='bx bxl-github'></i></a>
+                    <a href="#" onclick="googleLogin()" class="google-btn">
+                        <img src="../assets/images/google-icon.png" alt="Google" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22%23ea4335%22 d=%22M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15l-4-4 1.41-1.41L11 14.17l6.59-6.59L19 9l-8 8z%22/></svg>';this.style.width='22px';this.style.height='22px'">
+                        Google
+                    </a>
                 </div>
             </form>
         </div>
 
-        <!-- Toggle Panel -->
         <div class="toggle-box">
-            <div class="toggle-panel toggle-left">
-                <h1>👋 Hello, Student!</h1>
-                <p>Don't have an account yet?</p>
-                <button class="btn register-btn">Create Account</button>
-            </div>
-
-            <div class="toggle-panel toggle-right">
-                <h1>🎓 Welcome Back!</h1>
-                <p>Already have an account?</p>
-                <button class="btn login-btn">Sign In</button>
-            </div>
+            <div class="toggle-panel toggle-left"><h1>👋 Hello, Student!</h1><p>Don't have an account yet?</p><button class="btn register-btn">Create Account</button></div>
+            <div class="toggle-panel toggle-right"><h1>🎓 Welcome Back!</h1><p>Already have an account?</p><button class="btn login-btn">Sign In</button></div>
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- Phone Modal -->
+    <div id="phoneModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:9999;justify-content:center;align-items:center;">
+        <div style="background:white;padding:30px;border-radius:20px;text-align:center;max-width:400px;width:90%;">
+            <h3>📱 Phone Login</h3>
+            <div id="phoneStep1">
+                <p style="color:#666;font-size:14px;margin-bottom:10px;">Enter phone number with country code</p>
+                <input type="tel" id="phoneNumber" placeholder="+91 9876543210" style="width:100%;padding:14px;margin:10px 0;border-radius:10px;border:2px solid #ddd;font-size:16px;text-align:center;">
+                <div id="recaptcha-container"></div>
+                <button onclick="sendOTP()" class="btn" style="width:100%;margin-top:10px;background:#7c3aed;color:white;border:none;padding:14px;border-radius:10px;font-size:16px;cursor:pointer;">📩 Send OTP</button>
+            </div>
+            <div id="phoneStep2" style="display:none;">
+                <p style="color:#666;font-size:14px;margin-bottom:10px;">Enter 6-digit code sent to your phone</p>
+                <input type="text" id="otpCode" placeholder="123456" maxlength="6" style="width:100%;padding:14px;margin:10px 0;border-radius:10px;border:2px solid #ddd;font-size:20px;text-align:center;letter-spacing:5px;">
+                <button onclick="verifyOTP()" class="btn" style="width:100%;margin-top:10px;background:#10b981;color:white;border:none;padding:14px;border-radius:10px;font-size:16px;cursor:pointer;">✅ Verify & Login</button>
+            </div>
+            <button onclick="closePhoneModal()" style="margin-top:15px;background:none;border:none;color:#666;cursor:pointer;font-size:14px;">✕ Cancel</button>
+            <p id="phoneError" style="color:#ef4444;margin-top:10px;font-size:14px;"></p>
+        </div>
+    </div>
+
     <script src="../assets/js/firebase-config.js"></script>
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
-    
-    <!-- Toggle Script -->
     <script>
-        const container = document.querySelector('.container');
-        const registerBtn = document.querySelector('.register-btn');
-        const loginBtn = document.querySelector('.login-btn');
+        const container=document.querySelector('.container');
+        document.querySelector('.register-btn').addEventListener('click',()=>container.classList.add('active'));
+        document.querySelector('.login-btn').addEventListener('click',()=>container.classList.remove('active'));
 
-        registerBtn.addEventListener('click', () => {
-            container.classList.add('active');
-        });
-
-        loginBtn.addEventListener('click', () => {
-            container.classList.remove('active');
-        });
-
-        // Login Form Submit
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        document.getElementById('loginForm').addEventListener('submit',async(e)=>{
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const errorEl = document.getElementById('loginError');
-            
-            errorEl.textContent = '';
-            
-            const result = await login(email, password);
-            if (!result.success) {
-                errorEl.textContent = result.error;
-            }
+            const r=await login(document.getElementById('loginEmail').value,document.getElementById('loginPassword').value);
+            if(!r.success)document.getElementById('loginError').textContent=r.error;
         });
 
-        // Signup Form Submit
-        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+        document.getElementById('signupForm').addEventListener('submit',async(e)=>{
             e.preventDefault();
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            const errorEl = document.getElementById('signupError');
-            
-            errorEl.textContent = '';
-            
-            if (password.length < 6) {
-                errorEl.textContent = 'Password must be at least 6 characters';
-                return;
-            }
-            
-            const result = await signUp(email, password, name, 'student');
-            if (!result.success) {
-                errorEl.textContent = result.error;
-            }
+            const pw=document.getElementById('signupPassword').value;
+            if(pw.length<6){document.getElementById('signupError').textContent='Password must be 6+ characters';return}
+            const r=await signUp(document.getElementById('signupEmail').value,pw,document.getElementById('signupName').value,'student');
+            if(!r.success)document.getElementById('signupError').textContent=r.error;
         });
+
+        async function googleLogin(){
+            const provider=new firebase.auth.GoogleAuthProvider();
+            try{
+                const result=await auth.signInWithPopup(provider);
+                await callSheetAPI('registerUser',{uid:result.user.uid,name:result.user.displayName,email:result.user.email,role:'student'});
+                window.location.href='dashboard.html';
+            }catch(error){showToast('Google login failed: '+error.message,'error');}
+        }
+
+        async function forgotPassword(){
+            const email=document.getElementById('loginEmail').value;
+            if(!email){showToast('Please enter your email first!','error');return}
+            try{await auth.sendPasswordResetEmail(email);showToast('✅ Reset link sent to your email!','success');}
+            catch(error){showToast('Error: '+error.message,'error');}
+        }
+
+        let confirmationResult=null,recaptchaVerifier=null;
+
+        function phoneLogin(){
+            const modal=document.getElementById('phoneModal');
+            modal.style.display='flex';
+            document.getElementById('phoneStep1').style.display='block';
+            document.getElementById('phoneStep2').style.display='none';
+            document.getElementById('phoneError').textContent='';
+            document.getElementById('phoneNumber').value='';
+            document.getElementById('otpCode').value='';
+            if(!recaptchaVerifier){
+                try{
+                    recaptchaVerifier=new firebase.auth.RecaptchaVerifier('recaptcha-container',{'size':'invisible','callback':()=>{console.log('reCAPTCHA solved');}});
+                    recaptchaVerifier.render().then(widgetId=>{window.recaptchaWidgetId=widgetId;});
+                }catch(e){console.log('reCAPTCHA error:',e);}
+            }
+        }
+
+        function closePhoneModal(){document.getElementById('phoneModal').style.display='none';}
+
+        async function sendOTP(){
+            const phone=document.getElementById('phoneNumber').value.trim();
+            document.getElementById('phoneError').textContent='';
+            if(!phone){document.getElementById('phoneError').textContent='Enter phone number';return}
+            if(!phone.startsWith('+')){document.getElementById('phoneError').textContent='Include country code (+91)';return}
+            try{
+                document.getElementById('phoneError').textContent='Sending OTP...';
+                confirmationResult=await auth.signInWithPhoneNumber(phone,recaptchaVerifier);
+                document.getElementById('phoneStep1').style.display='none';
+                document.getElementById('phoneStep2').style.display='block';
+                document.getElementById('phoneError').textContent='';
+            }catch(error){
+                document.getElementById('phoneError').textContent=error.message;
+                if(recaptchaVerifier){try{recaptchaVerifier.clear();}catch(e){}recaptchaVerifier=null;}
+            }
+        }
+
+        async function verifyOTP(){
+            const code=document.getElementById('otpCode').value.trim();
+            if(!code||code.length<6){document.getElementById('phoneError').textContent='Enter valid 6-digit OTP';return}
+            try{
+                document.getElementById('phoneError').textContent='Verifying...';
+                const result=await confirmationResult.confirm(code);
+                const user=result.user;
+                await callSheetAPI('registerUser',{uid:user.uid,name:'Phone User',email:user.phoneNumber||'phone@user.com',role:'student'});
+                window.location.href='dashboard.html';
+            }catch(error){document.getElementById('phoneError').textContent='Invalid OTP. Try again.';}
+        }
     </script>
 </body>
 </html>

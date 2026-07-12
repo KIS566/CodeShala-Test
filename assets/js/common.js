@@ -72,5 +72,5 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
-
+  
 console.log("Common Utilities Loaded!");

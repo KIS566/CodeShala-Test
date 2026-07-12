@@ -4,477 +4,564 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Take Test - CodeShala</title>
+     <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <style>
-        /* Test Page Specific Styles */
-        .test-layout {
-            display: flex;
-            gap: 20px;
-            max-width: 1100px;
-        }
-        
-        .question-panel {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .side-panel {
-            width: 280px;
-            flex-shrink: 0;
-        }
-        
-        .timer-widget {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-xs);
-        }
-        
-        .timer-display {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: -1px;
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .timer-display.warning {
-            color: #f59e0b;
-            animation: pulse 1s ease-in-out infinite;
-        }
-        
-        .timer-display.danger {
-            color: #ef4444;
-            animation: pulse 0.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
-        }
-        
-        .timer-label {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-        
-        .question-nav-widget {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 18px;
-            box-shadow: var(--shadow-xs);
-        }
-        
-        .question-nav-widget h4 {
-            font-size: 0.85rem;
-            margin-bottom: 12px;
-            color: var(--text-secondary);
-        }
-        
-        .nav-buttons {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-        
-        .nav-dot {
-            aspect-ratio: 1;
-            border: 1.5px solid var(--border);
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.8rem;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .nav-dot:hover {
-            border-color: var(--primary);
-        }
-        
-        .nav-dot.current {
-            border-color: var(--primary);
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-        
-        .nav-dot.answered {
-            background: var(--success);
-            border-color: var(--success);
-            color: white;
-        }
-        
-        .nav-dot.skipped {
-            border-color: var(--warning);
-            background: var(--warning-light);
-            color: var(--warning);
-        }
-        
-        .nav-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-        
-        .nav-stats span {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        
-        .dot-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        
+        .test-layout { display: flex; gap: 20px; max-width: 1100px; margin: 0 auto; }
+        .question-panel { flex: 1; min-width: 0; }
+        .side-panel { width: 280px; flex-shrink: 0; }
+        .timer-widget { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; text-align: center; margin-bottom: 16px; box-shadow: var(--shadow-xs); }
+        .timer-display { font-size: 3rem; font-weight: 800; color: var(--primary); font-variant-numeric: tabular-nums; }
+        .timer-display.warning { color: #f59e0b; animation: pulse 1s infinite; }
+        .timer-display.danger { color: #ef4444; animation: pulse .5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .6; } }
+        .timer-label { font-size: .8rem; color: var(--text-secondary); margin-top: 4px; }
+        .question-nav-widget { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow-xs); }
+        .question-nav-widget h4 { font-size: .85rem; margin-bottom: 12px; color: var(--text-secondary); }
+        .nav-buttons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 15px; }
+        .nav-dot { aspect-ratio: 1; border: 1.5px solid var(--border); background: white; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: .8rem; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
+        .nav-dot:hover { border-color: var(--primary); }
+        .nav-dot.current { border-color: var(--primary); background: var(--primary-light); color: var(--primary); }
+        .nav-dot.answered { background: var(--success); border-color: var(--success); color: white; }
+        .nav-dot.skipped { border-color: var(--warning); background: var(--warning-light); color: var(--warning); }
+        .nav-stats { display: flex; justify-content: space-between; font-size: .75rem; color: var(--text-secondary); margin-bottom: 15px; }
+        .dot-indicator { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
         .dot-indicator.answered { background: var(--success); }
         .dot-indicator.skipped { background: var(--warning); }
-        .dot-indicator.pending { background: var(--border); }
+        .btn-submit { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; transition: var(--transition); }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,.35); }
+        .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .question-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px; box-shadow: var(--shadow-xs); margin-bottom: 16px; }
+        .question-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light); flex-wrap: wrap; gap: 8px; }
+        .question-num { font-size: .85rem; color: var(--text-secondary); font-weight: 600; }
+        .type-badge { padding: 4px 12px; border-radius: 20px; font-size: .75rem; font-weight: 700; }
+        .type-badge.mcq { background: #dbeafe; color: #2563eb; }
+        .type-badge.subjective { background: #fef3c7; color: #d97706; }
+        .marks-badge { background: var(--primary-light); color: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: .8rem; font-weight: 700; }
+        .question-text { font-size: 1.1rem; font-weight: 500; line-height: 1.7; margin-bottom: 24px; }
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        .option { display: flex; align-items: center; gap: 14px; padding: 16px 18px; border: 1.5px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: all .2s; }
+        .option:hover { border-color: var(--primary); background: var(--primary-light); }
+        .option.selected { border-color: var(--primary); background: var(--primary-light); }
+        .option-key { width: 36px; height: 36px; border-radius: 8px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .9rem; flex-shrink: 0; }
+        .option.selected .option-key { background: var(--primary); color: white; }
+        .option-text { flex: 1; font-size: .95rem; }
+        .option-check { font-size: 1.2rem; opacity: 0; }
+        .option.selected .option-check { opacity: 1; }
+        .subjective-answer { width: 100%; min-height: 180px; padding: 16px; border: 1.5px solid var(--border); border-radius: var(--radius); font-family: 'Plus Jakarta Sans', sans-serif; font-size: .95rem; line-height: 1.7; resize: vertical; outline: none; transition: var(--transition); }
+        .subjective-answer:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(99,102,241,.08); }
+        .word-count { text-align: right; font-size: .75rem; color: var(--text-muted); margin-top: 6px; }
+        .question-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .btn-nav { padding: 10px 20px; border: 1.5px solid var(--border); background: white; border-radius: 10px; cursor: pointer; font-weight: 600; transition: var(--transition); }
+        .btn-nav:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+        .btn-nav:disabled { opacity: .4; cursor: not-allowed; }
+        .btn-clear { margin-left: auto; background: none; border: none; color: var(--text-secondary); cursor: pointer; font-weight: 500; transition: var(--transition); }
+        .btn-clear:hover { color: var(--danger); }
+        .btn-clear:disabled { opacity: .4; cursor: not-allowed; }
         
-        .btn-submit {
-            width: 100%;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: var(--transition);
-        }
+        .error-container { text-align: center; padding: 60px 20px; max-width: 600px; margin: 0 auto; }
+        .error-container i { font-size: 4rem; color: #ef4444; display: block; margin-bottom: 20px; }
+        .error-container h2 { font-size: 1.5rem; margin-bottom: 12px; }
+        .error-container p { color: var(--text-secondary); margin-bottom: 8px; }
+        .error-container .debug-info { background: #1e1e2e; color: #f0f0f5; padding: 16px; border-radius: 12px; text-align: left; font-family: monospace; font-size: .85rem; margin: 16px 0; overflow-x: auto; white-space: pre-wrap; }
+        .btn-back { padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+        .btn-back:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(99,102,241,.35); }
+        .btn-retry { padding: 12px 24px; background: var(--bg); color: var(--text); border: 1.5px solid var(--border); border-radius: 10px; font-weight: 600; cursor: pointer; margin-left: 10px; }
+        .btn-retry:hover { border-color: var(--primary); color: var(--primary); }
         
-        .btn-submit:hover {
-            background: var(--primary-dark);
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: white; border-radius: var(--radius-lg); padding: 30px; max-width: 420px; width: 90%; text-align: center; box-shadow: var(--shadow-xl); animation: modalIn 0.3s ease; }
+        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal-box h3 { font-size: 1.3rem; margin-bottom: 12px; }
+        .modal-box p { color: var(--text-secondary); margin-bottom: 20px; }
+        .modal-box .modal-stats { background: var(--bg); border-radius: var(--radius); padding: 16px; margin-bottom: 20px; text-align: left; }
+        .modal-box .modal-stats div { display: flex; justify-content: space-between; padding: 4px 0; }
+        .modal-actions { display: flex; gap: 10px; }
+        .modal-actions button { flex: 1; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; border: none; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .modal-actions .btn-cancel-modal { background: var(--bg); color: var(--text); }
+        .modal-actions .btn-confirm-modal { background: var(--primary); color: white; }
+        .modal-actions .btn-confirm-modal:hover { background: var(--primary-dark); }
         
-        .question-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            box-shadow: var(--shadow-xs);
-            margin-bottom: 16px;
-        }
+        .loader { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
         
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border-light);
-        }
+        .toast { position: fixed; top: 20px; right: 20px; padding: 14px 24px; border-radius: 12px; color: white; font-weight: 600; z-index: 10000; animation: slideIn 0.5s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .toast.success { background: #10b981; }
+        .toast.error { background: #ef4444; }
+        .toast.warning { background: #f59e0b; }
+        .toast.info { background: #3b82f6; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
         
-        .question-num {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-        
-        .marks-badge {
-            background: var(--primary-light);
-            color: var(--primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-        
-        .question-text {
-            font-size: 1.1rem;
-            font-weight: 500;
-            line-height: 1.7;
-            margin-bottom: 24px;
-        }
-        
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        .option {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 16px 18px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .option:hover {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-        
-        .option.selected {
-            border-color: var(--primary);
-            background: var(--primary-light);
-        }
-        
-        .option-key {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: var(--bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-            flex-shrink: 0;
-        }
-        
-        .option.selected .option-key {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .option-text {
-            flex: 1;
-            font-size: 0.95rem;
-        }
-        
-        .option-check {
-            font-size: 1.2rem;
-            opacity: 0;
-        }
-        
-        .option.selected .option-check {
-            opacity: 1;
-        }
-        
-        .question-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .btn-nav {
-            padding: 10px 20px;
-            border: 1.5px solid var(--border);
-            background: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-        
-        .btn-nav:hover {
-            border-color: var(--primary);
-        }
-        
-        .btn-nav:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-        
-        .btn-clear {
-            margin-left: auto;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-weight: 500;
-        }
-        
-        .btn-clear:hover {
-            color: var(--danger);
-        }
-        
-        @media (max-width: 768px) {
-            .test-layout {
-                flex-direction: column-reverse;
-            }
-            .side-panel {
-                width: 100%;
-                display: flex;
-                gap: 10px;
-            }
-            .timer-widget {
-                flex: 1;
-                margin-bottom: 0;
-                padding: 12px;
-            }
-            .timer-display {
-                font-size: 2rem;
-            }
-            .question-nav-widget {
-                display: none;
-            }
-        }
+        @media (max-width: 768px) { .test-layout { flex-direction: column-reverse; } .side-panel { width: 100%; display: flex; gap: 10px; flex-wrap: wrap; } .timer-widget { flex: 1; margin-bottom: 0; padding: 12px; } .timer-display { font-size: 2rem; } .question-nav-widget { flex: 1; min-width: 200px; } }
+        @media (max-width: 500px) { .side-panel { flex-direction: column; } }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <main class="main-content" style="margin-left: 0;">
+        <main class="main-content" style="margin-left:0">
             <header class="topbar">
-                <a href="dashboard.html" style="text-decoration: none; color: var(--text-secondary); font-weight: 600;">
+                <a href="dashboard.html" style="text-decoration:none;color:var(--text-secondary);font-weight:600">
                     ← Back to Dashboard
                 </a>
-                <span id="testTitle" style="font-weight: 700;">Loading Test...</span>
+                <span id="testTitle" style="font-weight:700">Loading Test...</span>
                 <div></div>
             </header>
 
             <div class="content">
-                <div class="test-layout">
-                    <!-- Question Panel -->
-                    <div class="question-panel">
-                        <div class="question-card">
-                            <div class="question-header">
-                                <span class="question-num">Question <span id="currentQ">1</span> of <span id="totalQ">0</span></span>
-                                <span class="marks-badge">⭐ <span id="marks">1</span> Mark</span>
-                            </div>
-                            <div class="question-text" id="questionText">Loading...</div>
-                            <div class="options-list" id="optionsList"></div>
-                            <div class="question-actions">
-                                <button class="btn-nav" id="prevBtn" onclick="prevQuestion()">← Previous</button>
-                                <button class="btn-clear" onclick="clearAnswer()">Clear Selection</button>
-                                <button class="btn-nav" id="nextBtn" onclick="nextQuestion()">Next →</button>
-                            </div>
+                <div id="errorContainer" style="display:none;">
+                    <div class="error-container">
+                        <i class='bx bx-error-circle'></i>
+                        <h2 id="errorTitle">⚠️ Test Not Found</h2>
+                        <p id="errorMessage">The test you're looking for doesn't exist or has been removed.</p>
+                        <div class="debug-info" id="debugInfo"></div>
+                        <div style="margin-top:20px;">
+                            <a href="dashboard.html" class="btn-back">← Back to Dashboard</a>
+                            <button class="btn-retry" onclick="retryLoad()">🔄 Retry</button>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Side Panel -->
-                    <div class="side-panel">
-                        <div class="timer-widget">
-                            <div class="timer-display" id="timerDisplay">00:00</div>
-                            <div class="timer-label">Time Remaining</div>
-                        </div>
-                        <div class="question-nav-widget">
-                            <h4>Question Navigator</h4>
-                            <div class="nav-buttons" id="navDots"></div>
-                            <div class="nav-stats">
-                                <span><span class="dot-indicator answered"></span> Answered: <b id="answeredCount">0</b></span>
-                                <span><span class="dot-indicator skipped"></span> Skipped: <b id="skippedCount">0</b></span>
+                <div id="testContent" style="display:none;">
+                    <div class="test-layout">
+                        <div class="question-panel">
+                            <div class="question-card">
+                                <div class="question-header">
+                                    <span class="question-num">
+                                        Question <span id="currentQ">1</span> of <span id="totalQ">0</span>
+                                    </span>
+                                    <span class="type-badge" id="qTypeBadge">📝 MCQ</span>
+                                    <span class="marks-badge">⭐ <span id="marks">1</span> Mark</span>
+                                </div>
+                                <div class="question-text" id="questionText">Loading...</div>
+                                <div class="options-list" id="optionsList"></div>
+                                <div id="subjectiveBox" style="display:none">
+                                    <textarea class="subjective-answer" id="subjectiveAnswer" 
+                                              placeholder="Type your answer here..." 
+                                              oninput="onSubjectiveChange()"></textarea>
+                                    <div class="word-count">
+                                        <span id="charCount">0</span> characters
+                                    </div>
+                                </div>
+                                <div class="question-actions">
+                                    <button class="btn-nav" id="prevBtn" onclick="prevQuestion()">← Previous</button>
+                                    <button class="btn-clear" id="clearBtn" onclick="clearAnswer()">✕ Clear</button>
+                                    <button class="btn-nav" id="nextBtn" onclick="nextQuestion()">Next →</button>
+                                </div>
                             </div>
-                            <button class="btn-submit" onclick="submitTest()">Submit Test</button>
+                        </div>
+
+                        <div class="side-panel">
+                            <div class="timer-widget">
+                                <div class="timer-display" id="timerDisplay">00:00</div>
+                                <div class="timer-label">⏱️ Time Remaining</div>
+                            </div>
+                            <div class="question-nav-widget">
+                                <h4>📍 Question Navigator</h4>
+                                <div class="nav-buttons" id="navDots"></div>
+                                <div class="nav-stats">
+                                    <span>
+                                        <span class="dot-indicator answered"></span> 
+                                        Answered: <b id="answeredCount">0</b>
+                                    </span>
+                                    <span>
+                                        <span class="dot-indicator skipped"></span> 
+                                        Skipped: <b id="skippedCount">0</b>
+                                    </span>
+                                </div>
+                                <button class="btn-submit" id="submitBtn" onclick="showSubmitModal()">📤 Submit Test</button>
+                            </div>
                         </div>
                     </div>
+                </div>
+
+                <div id="loadingContainer" style="text-align:center;padding:60px 20px;">
+                    <div class="loader"></div>
+                    <p style="margin-top:16px;color:var(--text-secondary);">Loading test...</p>
+                    <p style="font-size:0.85rem;color:var(--text-muted);" id="loadingStatus">Initializing...</p>
                 </div>
             </div>
         </main>
     </div>
 
+    <!-- Submit Confirmation Modal -->
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal-box">
+            <h3>📤 Submit Test?</h3>
+            <p>Are you sure you want to submit your test?</p>
+            <div class="modal-stats" id="modalStats">
+                <div><span>Total Questions:</span><span id="modalTotal">0</span></div>
+                <div><span>Answered:</span><span id="modalAnswered">0</span></div>
+                <div><span>Unanswered:</span><span id="modalUnanswered">0</span></div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel-modal" onclick="hideSubmitModal()">Cancel</button>
+                <button class="btn-confirm-modal" id="confirmSubmitBtn" onclick="confirmSubmit()">✅ Submit Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="../assets/js/firebase-config.js"></script>
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
+
     <script>
+        // ============================================
+        // STATE
+        // ============================================
+        
         let questions = [];
         let currentIndex = 0;
         let answers = {};
         let timer = null;
         let timeLeft = 0;
+        let testData = null;
+        let isSubmitting = false;
+        let loadAttempts = 0;
+        const MAX_LOAD_ATTEMPTS = 3;
 
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
-            const params = new URLSearchParams(window.location.search);
-            const testId = params.get('id');
-            if (!testId) { window.location.href = 'dashboard.html'; return; }
-            await loadTest(testId);
+        // ============================================
+        // DOM REFS
+        // ============================================
+        
+        const DOM = {
+            loadingContainer: document.getElementById('loadingContainer'),
+            errorContainer: document.getElementById('errorContainer'),
+            testContent: document.getElementById('testContent'),
+            testTitle: document.getElementById('testTitle'),
+            currentQ: document.getElementById('currentQ'),
+            totalQ: document.getElementById('totalQ'),
+            qTypeBadge: document.getElementById('qTypeBadge'),
+            marks: document.getElementById('marks'),
+            questionText: document.getElementById('questionText'),
+            optionsList: document.getElementById('optionsList'),
+            subjectiveBox: document.getElementById('subjectiveBox'),
+            subjectiveAnswer: document.getElementById('subjectiveAnswer'),
+            charCount: document.getElementById('charCount'),
+            prevBtn: document.getElementById('prevBtn'),
+            nextBtn: document.getElementById('nextBtn'),
+            clearBtn: document.getElementById('clearBtn'),
+            timerDisplay: document.getElementById('timerDisplay'),
+            navDots: document.getElementById('navDots'),
+            answeredCount: document.getElementById('answeredCount'),
+            skippedCount: document.getElementById('skippedCount'),
+            submitBtn: document.getElementById('submitBtn'),
+            errorTitle: document.getElementById('errorTitle'),
+            errorMessage: document.getElementById('errorMessage'),
+            debugInfo: document.getElementById('debugInfo'),
+            loadingStatus: document.getElementById('loadingStatus')
+        };
+
+        // ============================================
+        // TOAST FUNCTION
+        // ============================================
+        
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // ============================================
+        // AUTH HANDLER
+        // ============================================
+        
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar')?.classList.toggle('open');
         });
 
-        async function loadTest(testId) {
-            const test = await callSheetAPI('getTestDetails', { testId });
-            const qs = await callSheetAPI('getTestQuestions', { testId });
-            
-            if (!test || !qs || qs.length === 0) {
-                alert('Test not found!');
-                window.location.href = 'dashboard.html';
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
                 return;
             }
             
-            questions = qs;
-            questions.forEach(q => answers[q.id] = null);
+            const params = new URLSearchParams(window.location.search);
+            const testId = params.get('id');
             
-            document.getElementById('testTitle').textContent = test.title;
-            document.getElementById('totalQ').textContent = questions.length;
+            console.log('🔍 Test ID from URL:', testId);
             
-            timeLeft = (parseInt(test.duration) || 30) * 60;
-            startTimer();
-            renderNavDots();
-            showQuestion(0);
+            if (!testId) {
+                showError(
+                    '❌ No Test Selected',
+                    'Please select a test from the dashboard.',
+                    'No test ID found in URL.'
+                );
+                return;
+            }
+            
+            DOM.loadingStatus.textContent = `Loading test: ${testId}...`;
+            await loadTest(testId);
+        });
+
+        // ============================================
+        // LOAD TEST
+        // ============================================
+        
+        async function loadTest(testId) {
+            try {
+                DOM.loadingStatus.textContent = 'Fetching test details...';
+                
+                testData = await getTestDetails(testId);
+                console.log('📋 Test Details Response:', testData);
+                
+                if (!testData) {
+                    DOM.loadingStatus.textContent = 'Test not found in details API, trying alternative...';
+                    const allTests = await getAllTests();
+                    testData = allTests ? allTests.find(t => t.id === testId) : null;
+                }
+                
+                if (!testData) {
+                    showError(
+                        '⚠️ Test Not Found',
+                        `The test "${testId}" doesn't exist.`,
+                        `Test ID: ${testId}\n\nPlease check:\n1. Test exists in Google Sheets\n2. Test ID is correct\n3. Status is "active"`
+                    );
+                    return;
+                }
+                
+                console.log('✅ Test Found:', testData);
+                DOM.loadingStatus.textContent = 'Loading questions...';
+                
+                questions = await getTestQuestions(testId);
+                console.log('📝 Questions Response:', questions);
+                
+                if (!questions || questions.length === 0) {
+                    showError(
+                        '📝 No Questions Found',
+                        `The test "${testData.title}" has no questions.`,
+                        `Test ID: ${testId}\n\nPlease add questions to this test.`
+                    );
+                    return;
+                }
+                
+                console.log('✅ Questions Loaded:', questions.length);
+                DOM.loadingStatus.textContent = 'Initializing test...';
+                
+                questions.forEach(q => {
+                    answers[q.id] = null;
+                });
+                
+                DOM.testTitle.textContent = testData.title || 'Test';
+                DOM.totalQ.textContent = questions.length;
+                
+                timeLeft = (parseInt(testData.duration) || 30) * 60;
+                startTimer();
+                renderNavDots();
+                showQuestion(0);
+                
+                DOM.loadingContainer.style.display = 'none';
+                DOM.testContent.style.display = 'block';
+                DOM.errorContainer.style.display = 'none';
+                
+                console.log('✅ Test loaded successfully!');
+                
+            } catch (error) {
+                console.error('❌ Error loading test:', error);
+                showError(
+                    '❌ Error Loading Test',
+                    'An error occurred while loading the test.',
+                    `Error: ${error.message}`
+                );
+            }
         }
 
+        // ============================================
+        // SHOW ERROR
+        // ============================================
+        
+        function showError(title, message, debug) {
+            DOM.loadingContainer.style.display = 'none';
+            DOM.testContent.style.display = 'none';
+            DOM.errorContainer.style.display = 'block';
+            
+            DOM.errorTitle.textContent = title;
+            DOM.errorMessage.textContent = message;
+            DOM.debugInfo.textContent = debug || 'No additional debug information.';
+        }
+
+        // ============================================
+        // RETRY LOAD
+        // ============================================
+        
+        function retryLoad() {
+            loadAttempts++;
+            if (loadAttempts > MAX_LOAD_ATTEMPTS) {
+                showError(
+                    '❌ Max Retry Attempts Reached',
+                    'Please check your database connection.',
+                    `Attempts: ${loadAttempts}`
+                );
+                return;
+            }
+            
+            DOM.errorContainer.style.display = 'none';
+            DOM.loadingContainer.style.display = 'block';
+            DOM.loadingStatus.textContent = `Retry attempt ${loadAttempts}/${MAX_LOAD_ATTEMPTS}...`;
+            
+            const params = new URLSearchParams(window.location.search);
+            const testId = params.get('id');
+            if (testId) {
+                loadTest(testId);
+            }
+        }
+
+        // ============================================
+        // TIMER
+        // ============================================
+        
         function startTimer() {
-            updateTimer();
+            updateTimerDisplay();
             timer = setInterval(() => {
                 timeLeft--;
-                updateTimer();
-                if (timeLeft <= 0) { clearInterval(timer); autoSubmit(); }
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    autoSubmit();
+                }
             }, 1000);
         }
 
-        function updateTimer() {
-            const m = Math.floor(timeLeft / 60);
-            const s = timeLeft % 60;
-            const display = document.getElementById('timerDisplay');
-            display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            const display = DOM.timerDisplay;
+            display.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
             display.className = 'timer-display';
             if (timeLeft < 60) display.classList.add('danger');
             else if (timeLeft < 300) display.classList.add('warning');
         }
 
+        // ============================================
+        // SHOW QUESTION
+        // ============================================
+        
         function showQuestion(index) {
+            if (index < 0 || index >= questions.length) return;
+            
             currentIndex = index;
             const q = questions[index];
+            const type = q.type || 'mcq';
             
-            document.getElementById('currentQ').textContent = index + 1;
-            document.getElementById('marks').textContent = q.marks || 1;
-            document.getElementById('questionText').textContent = q.question;
+            DOM.currentQ.textContent = index + 1;
+            DOM.marks.textContent = q.marks || 1;
+            DOM.questionText.textContent = q.question || 'No question text.';
             
-            const opts = [
+            const badge = DOM.qTypeBadge;
+            if (type === 'subjective') {
+                badge.textContent = '✍️ Subjective';
+                badge.className = 'type-badge subjective';
+            } else {
+                badge.textContent = '📝 MCQ';
+                badge.className = 'type-badge mcq';
+            }
+            
+            if (type === 'subjective') {
+                DOM.optionsList.style.display = 'none';
+                DOM.subjectiveBox.style.display = 'block';
+                DOM.subjectiveAnswer.value = answers[q.id] || '';
+                updateCharCount();
+            } else {
+                DOM.optionsList.style.display = 'flex';
+                DOM.subjectiveBox.style.display = 'none';
+                renderOptions(q);
+            }
+            
+            DOM.prevBtn.disabled = index === 0;
+            DOM.nextBtn.disabled = index === questions.length - 1;
+            DOM.clearBtn.disabled = !answers[q.id];
+            
+            updateNavDots();
+        }
+
+        // ============================================
+        // RENDER OPTIONS
+        // ============================================
+        
+        function renderOptions(q) {
+            const options = [
                 { key: 'A', text: q.optionA },
                 { key: 'B', text: q.optionB },
                 { key: 'C', text: q.optionC },
                 { key: 'D', text: q.optionD }
-            ].filter(o => o.text);
+            ].filter(opt => opt.text);
             
-            document.getElementById('optionsList').innerHTML = opts.map(o => `
-                <div class="option ${answers[q.id] === o.key ? 'selected' : ''}" 
-                     onclick="selectAnswer('${q.id}', '${o.key}')">
-                    <div class="option-key">${o.key}</div>
-                    <div class="option-text">${o.text}</div>
+            const container = DOM.optionsList;
+            const selected = answers[q.id];
+            
+            if (options.length === 0) {
+                container.innerHTML = '<p style="color:var(--text-muted);">No options available.</p>';
+                return;
+            }
+            
+            container.innerHTML = options.map(opt => `
+                <div class="option ${selected === opt.key ? 'selected' : ''}" 
+                     onclick="selectAnswer('${q.id}', '${opt.key}')">
+                    <div class="option-key">${opt.key}</div>
+                    <div class="option-text">${opt.text}</div>
                     <div class="option-check">✅</div>
                 </div>
             `).join('');
-            
-            document.getElementById('prevBtn').disabled = index === 0;
-            document.getElementById('nextBtn').disabled = index === questions.length - 1;
-            updateNavDots();
         }
 
+        // ============================================
+        // ANSWER HANDLERS
+        // ============================================
+        
         function selectAnswer(qId, key) {
             answers[qId] = key;
             showQuestion(currentIndex);
+            updateNavDots();
+        }
+
+        function onSubjectiveChange() {
+            const q = questions[currentIndex];
+            if (!q) return;
+            answers[q.id] = DOM.subjectiveAnswer.value;
+            updateCharCount();
+            updateNavDots();
+            DOM.clearBtn.disabled = !answers[q.id];
+        }
+
+        function updateCharCount() {
+            const text = DOM.subjectiveAnswer.value || '';
+            DOM.charCount.textContent = text.length;
         }
 
         function clearAnswer() {
-            answers[questions[currentIndex].id] = null;
+            const q = questions[currentIndex];
+            if (!q) return;
+            answers[q.id] = null;
+            if ((q.type || 'mcq') === 'subjective') {
+                DOM.subjectiveAnswer.value = '';
+                updateCharCount();
+            }
             showQuestion(currentIndex);
+            updateNavDots();
         }
 
+        // ============================================
+        // NAVIGATION
+        // ============================================
+        
         function nextQuestion() {
             if (currentIndex < questions.length - 1) showQuestion(currentIndex + 1);
         }
@@ -483,62 +570,183 @@
             if (currentIndex > 0) showQuestion(currentIndex - 1);
         }
 
+        // ============================================
+        // NAVIGATION DOTS
+        // ============================================
+        
         function renderNavDots() {
-            document.getElementById('navDots').innerHTML = questions.map((q, i) => `
-                <button class="nav-dot" onclick="showQuestion(${i})" id="dot${i}">${i+1}</button>
+            DOM.navDots.innerHTML = questions.map((q, i) => `
+                <button class="nav-dot" onclick="showQuestion(${i})" id="dot${i}">${i + 1}</button>
             `).join('');
         }
 
         function updateNavDots() {
+            let answered = 0;
             questions.forEach((q, i) => {
                 const dot = document.getElementById(`dot${i}`);
                 if (!dot) return;
                 dot.className = 'nav-dot';
                 if (i === currentIndex) dot.classList.add('current');
-                if (answers[q.id]) dot.classList.add('answered');
-                else if (answers[q.id] === null && i !== currentIndex) dot.classList.add('skipped');
+                const ans = answers[q.id];
+                const isAnswered = ans !== null && ans !== undefined && ans !== '';
+                if (isAnswered) {
+                    dot.classList.add('answered');
+                    answered++;
+                } else if (i !== currentIndex) {
+                    dot.classList.add('skipped');
+                }
             });
+            DOM.answeredCount.textContent = answered;
+            DOM.skippedCount.textContent = questions.length - answered;
+        }
+
+        // ============================================
+        // SUBMIT MODAL
+        // ============================================
+        
+        function showSubmitModal() {
+            const total = questions.length;
+            const answered = questions.filter(q => {
+                const a = answers[q.id];
+                return a !== null && a !== undefined && a !== '';
+            }).length;
+            const unanswered = total - answered;
             
-            const answered = Object.values(answers).filter(a => a !== null).length;
-            document.getElementById('answeredCount').textContent = answered;
-            document.getElementById('skippedCount').textContent = questions.length - answered;
+            document.getElementById('modalTotal').textContent = total;
+            document.getElementById('modalAnswered').textContent = answered;
+            document.getElementById('modalUnanswered').textContent = unanswered;
+            document.getElementById('submitModal').classList.add('show');
         }
 
-        function submitTest() {
-            if (!confirm('Submit test? You cannot change answers after submission.')) return;
-            confirmSubmit();
+        function hideSubmitModal() {
+            document.getElementById('submitModal').classList.remove('show');
         }
 
+        // ============================================
+        // CONFIRM SUBMIT (FIXED - Uses saveResult)
+        // ============================================
+        
         async function confirmSubmit() {
-            clearInterval(timer);
-            let score = 0, total = 0;
-            questions.forEach(q => {
-                const m = parseInt(q.marks) || 1;
-                total += m;
-                if (answers[q.id] === q.correct) score += m;
-            });
+            if (isSubmitting) return;
+            isSubmitting = true;
+            const confirmBtn = document.getElementById('confirmSubmitBtn');
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = '⏳ Submitting...';
             
-            const pct = ((score/total)*100).toFixed(1);
-            const result = await callSheetAPI('saveResult', {
-                id: 'RES_' + Date.now(),
-                studentId: auth.currentUser.uid,
-                studentEmail: auth.currentUser.email,
-                testId: questions[0].testId,
-                testTitle: document.getElementById('testTitle').textContent,
-                score, total, percentage: pct,
-                timeTaken: (parseInt(questions.length)*60) - timeLeft,
-                answers, submittedAt: new Date().toISOString()
-            });
+            hideSubmitModal();
             
-            if (result && result.success) {
-                window.location.href = `results.html?resultId=${result.resultId}`;
+            // Collect all answers
+            const q = questions[currentIndex];
+            if (q && (q.type || 'mcq') === 'subjective') {
+                answers[q.id] = DOM.subjectiveAnswer.value;
+            }
+            
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            
+            try {
+                let mcqScore = 0;
+                let mcqTotal = 0;
+                const mcqAnswers = {};
+                const subjectiveAnswers = {};
+                const allAnswers = {};
+                let subTotal = 0;
+                
+                for (const q of questions) {
+                    const type = q.type || 'mcq';
+                    const marks = parseInt(q.marks) || 1;
+                    const answer = answers[q.id] || '';
+                    allAnswers[q.id] = answer;
+                    
+                    if (type === 'mcq') {
+                        mcqAnswers[q.id] = answer;
+                        mcqTotal += marks;
+                        if (answer === q.correct) {
+                            mcqScore += marks;
+                        }
+                    } else {
+                        subjectiveAnswers[q.id] = answer;
+                        subTotal += marks;
+                    }
+                }
+                
+                const totalScore = mcqScore;
+                const maxScore = mcqTotal + subTotal;
+                const percentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+                
+                // 🔥 Using saveResult instead of saveCompleteResult
+                const resultData = {
+                    id: 'RES_' + Date.now(),
+                    studentId: auth.currentUser.uid,
+                    studentEmail: auth.currentUser.email,
+                    testId: testData.id,
+                    testTitle: testData.title,
+                    score: mcqScore,
+                    total: mcqTotal,
+                    percentage: parseFloat(percentage.toFixed(1)),
+                    answers: allAnswers,
+                    timeTaken: (parseInt(testData.duration) * 60) - timeLeft,
+                    submittedAt: new Date().toISOString(),
+                    // Also store in new format for future use
+                    mcqScore: mcqScore,
+                    mcqTotal: mcqTotal,
+                    mcqAnswers: mcqAnswers,
+                    subjectiveTotal: subTotal,
+                    subjectiveAnswers: subjectiveAnswers,
+                    subjectiveMarks: {}
+                };
+                
+                console.log('📤 Submitting result:', resultData);
+                
+                // Use saveResult (which exists in API)
+                const result = await saveResult(resultData);
+                console.log('📡 Save result response:', result);
+                
+                if (result && result.success) {
+                    showToast('✅ Test submitted successfully!', 'success');
+                    window.location.href = `results.html?resultId=${resultData.id}`;
+                } else {
+                    showToast('❌ Error submitting test. Please try again.', 'error');
+                    isSubmitting = false;
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = '✅ Submit Now';
+                }
+                
+            } catch (error) {
+                console.error('❌ Error submitting test:', error);
+                showToast('❌ Error submitting test: ' + error.message, 'error');
+                isSubmitting = false;
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = '✅ Submit Now';
             }
         }
 
+        // ============================================
+        // AUTO SUBMIT
+        // ============================================
+        
         function autoSubmit() {
-            alert('Time is up!');
-            confirmSubmit();
+            showToast('⏰ Time is up! Auto-submitting...', 'warning');
+            const q = questions[currentIndex];
+            if (q && (q.type || 'mcq') === 'subjective') {
+                answers[q.id] = DOM.subjectiveAnswer.value;
+            }
+            setTimeout(() => confirmSubmit(), 2000);
         }
+
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prevQuestion(); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); nextQuestion(); }
+            if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); showSubmitModal(); }
+        });
+
+        console.log('✅ Take Test Page Loaded Successfully!');
     </script>
 </body>
 </html>

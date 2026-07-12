@@ -3,146 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Results - CodeShala</title>
+    <title>My Results - CodeShala</title>
+     <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <style>
-        .results-container { max-width: 800px; }
-        
-        .result-hero {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
-            padding: 40px;
-            text-align: center;
-            margin-bottom: 24px;
-            box-shadow: var(--shadow-xs);
-        }
-        
-        .score-circle {
-            width: 160px;
-            height: 160px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            color: white;
-            font-weight: 800;
-            position: relative;
-        }
-        
+        .results-container { max-width: 900px; margin: 0 auto; }
+        .result-hero { background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 40px; text-align: center; margin-bottom: 24px; box-shadow: var(--shadow-xs); }
+        .score-circle { width: 160px; height: 160px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 24px; color: white; font-weight: 800; position: relative; }
         .score-circle.excellent { background: linear-gradient(135deg, #10b981, #059669); }
         .score-circle.good { background: linear-gradient(135deg, #6366f1, #4f46e5); }
         .score-circle.average { background: linear-gradient(135deg, #f59e0b, #d97706); }
         .score-circle.poor { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        
-        .score-number {
-            font-size: 3rem;
-            line-height: 1;
-        }
-        
-        .score-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .result-hero h2 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-        }
-        
-        .result-hero .test-name {
-            color: var(--text-secondary);
-        }
-        
-        .result-details {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-top: 24px;
-        }
-        
-        .detail-item {
-            background: var(--bg);
-            border-radius: var(--radius);
-            padding: 16px;
-        }
-        
-        .detail-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-        
-        .detail-label {
-            font-size: 0.78rem;
-            color: var(--text-secondary);
-            margin-top: 2px;
-        }
-        
-        .history-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
-            padding: 24px;
-            box-shadow: var(--shadow-xs);
-        }
-        
-        .history-card h3 {
-            margin-bottom: 16px;
-        }
-        
-        @media (max-width: 600px) {
-            .result-details {
-                grid-template-columns: 1fr;
-            }
-            .score-circle {
-                width: 130px;
-                height: 130px;
-            }
-            .score-number {
-                font-size: 2.5rem;
-            }
-        }
+        .score-circle.pending { background: linear-gradient(135deg, #9ca3af, #6b7280); }
+        .score-number { font-size: 3rem; line-height: 1; }
+        .score-label { font-size: 0.9rem; opacity: 0.9; }
+        .result-hero h2 { font-size: 1.3rem; margin-bottom: 8px; }
+        .result-hero .test-name { color: var(--text-secondary); font-size: 1rem; }
+        .result-hero .subtitle { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+        .result-details { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 24px; }
+        .detail-item { background: var(--bg); border-radius: var(--radius); padding: 16px; text-align: center; }
+        .detail-item .detail-value { font-size: 1.3rem; font-weight: 700; }
+        .detail-item .detail-label { font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px; }
+        .detail-item .detail-value.mcq { color: #2563eb; }
+        .detail-item .detail-value.sub { color: #d97706; }
+        .detail-item .detail-value.total { color: #059669; }
+        .detail-item .detail-value.grade { color: #6366f1; }
+        .history-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); padding: 24px; box-shadow: var(--shadow-xs); }
+        .history-card h3 { margin-bottom: 16px; font-size: 1rem; }
+        .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border-light); cursor: pointer; }
+        .history-item:last-child { border-bottom: none; }
+        .history-item:hover { background: var(--bg); margin: 0 -12px; padding-left: 12px; padding-right: 12px; border-radius: var(--radius); }
+        .history-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; }
+        .history-info .history-meta { font-size: 0.78rem; color: var(--text-secondary); }
+        .history-info .history-meta span { margin-right: 12px; }
+        .history-score { display: flex; align-items: center; gap: 12px; }
+        .history-score .score-badge-sm { padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .history-score .score-badge-sm.excellent { background: #d1fae5; color: #059669; }
+        .history-score .score-badge-sm.good { background: #dbeafe; color: #2563eb; }
+        .history-score .score-badge-sm.average { background: #fef3c7; color: #d97706; }
+        .history-score .score-badge-sm.poor { background: #fee2e2; color: #dc2626; }
+        .history-score .score-badge-sm.pending { background: #f3f4f6; color: #6b7280; }
+        .history-score .grade-badge-sm { padding: 2px 10px; border-radius: 12px; font-weight: 700; font-size: 0.85rem; }
+        .history-score .grade-badge-sm.Aplus { background: #d1fae5; color: #059669; }
+        .history-score .grade-badge-sm.A { background: #dbeafe; color: #2563eb; }
+        .history-score .grade-badge-sm.Bplus { background: #fef3c7; color: #d97706; }
+        .history-score .grade-badge-sm.B { background: #fef3c7; color: #d97706; }
+        .history-score .grade-badge-sm.Cplus { background: #fde68a; color: #92400e; }
+        .history-score .grade-badge-sm.C { background: #fca5a5; color: #991b1b; }
+        .history-score .grade-badge-sm.F { background: #fecaca; color: #991b1b; }
+        .history-score .grade-badge-sm.Pending { background: #f3f4f6; color: #6b7280; }
+        .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+        .empty-state i { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; display: block; }
+        .empty-state p { font-size: 1rem; }
+        .empty-state .sub-text { font-size: 0.85rem; color: var(--text-muted); }
+        .loader-container { text-align: center; padding: 40px; }
+        .loader { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .toast { position: fixed; top: 20px; right: 20px; padding: 14px 24px; border-radius: 12px; color: white; font-weight: 600; z-index: 10000; animation: slideIn 0.5s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .toast.success { background: #10b981; }
+        .toast.error { background: #ef4444; }
+        .toast.warning { background: #f59e0b; }
+        .toast.info { background: #3b82f6; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        @media (max-width: 768px) { .result-details { grid-template-columns: repeat(2, 1fr); } .score-circle { width: 130px; height: 130px; } .score-number { font-size: 2.5rem; } }
+        @media (max-width: 500px) { .result-details { grid-template-columns: 1fr; } .history-item { flex-direction: column; align-items: flex-start; gap: 8px; } .history-score { width: 100%; justify-content: space-between; } }
     </style>
 </head>
 <body>
     <div class="dashboard">
-        <main class="main-content" style="margin-left: 0;">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>Code<span class="grad-text">Shala</span></span></a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a>
+                <a href="take-test.html" class="nav-item"><i class='bx bxs-edit-alt'></i><span>Take Test</span></a>
+                <a href="results.html" class="nav-item active"><i class='bx bxs-bar-chart-alt-2'></i><span>My Results</span></a>
+                <a href="profile.html" class="nav-item"><i class='bx bxs-user-circle'></i><span>Profile</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()" class="nav-item logout"><i class='bx bxs-log-out-circle'></i><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
             <header class="topbar">
-                <a href="dashboard.html" style="text-decoration: none; color: var(--text-secondary); font-weight: 600;">
-                    ← Back to Dashboard
-                </a>
-                <span style="font-weight: 700;">Test Results</span>
-                <div></div>
+                <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
+                <span style="font-weight:700">📊 My Results</span>
+                <a href="dashboard.html" style="text-decoration:none;color:var(--text-secondary);font-weight:600;font-size:0.85rem;">← Back to Dashboard</a>
             </header>
 
             <div class="content">
                 <div class="results-container">
                     <!-- Latest Result Hero -->
                     <div class="result-hero" id="latestResult">
-                        <div class="score-circle" id="scoreCircle">
-                            <span class="score-number" id="scorePct">0%</span>
+                        <div class="score-circle pending" id="scoreCircle">
+                            <span class="score-number" id="scorePct">--</span>
                             <span class="score-label">Score</span>
                         </div>
-                        <h2 id="resultTitle">Great Job! 🎉</h2>
-                        <p class="test-name" id="resultTestName"></p>
+                        <h2 id="resultTitle">📊 Your Results</h2>
+                        <p class="test-name" id="resultTestName">Loading results...</p>
+                        <p class="subtitle" id="resultSubtitle"></p>
                         <div class="result-details">
-                            <div class="detail-item">
-                                <div class="detail-value" id="resultScore">0/0</div>
-                                <div class="detail-label">Score</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-value" id="resultTime">0m</div>
-                                <div class="detail-label">Time Taken</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-value" id="resultDate">-</div>
-                                <div class="detail-label">Date</div>
-                            </div>
+                            <div class="detail-item"><div class="detail-value mcq" id="resultMCQ">--/--</div><div class="detail-label">📝 MCQ</div></div>
+                            <div class="detail-item"><div class="detail-value sub" id="resultSub">--/--</div><div class="detail-label">✍️ Subjective</div></div>
+                            <div class="detail-item"><div class="detail-value total" id="resultTotal">--/--</div><div class="detail-label">📊 Total</div></div>
+                            <div class="detail-item"><div class="detail-value grade" id="resultGrade">--</div><div class="detail-label">🏅 Grade</div></div>
                         </div>
                     </div>
 
@@ -150,9 +123,9 @@
                     <div class="history-card">
                         <h3>📋 All Results</h3>
                         <div id="allResults">
-                            <div class="empty-state">
-                                <i class='bx bx-bar-chart-alt-2'></i>
-                                <p>No results yet</p>
+                            <div class="loader-container">
+                                <div class="loader"></div>
+                                <p style="margin-top:12px;color:var(--text-secondary);">Loading results...</p>
                             </div>
                         </div>
                     </div>
@@ -165,66 +138,321 @@
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
+
     <script>
+        // ============================================
+        // STATE
+        // ============================================
+        
+        let allResults = [];
+        let isLoading = false;
+
+        // ============================================
+        // DOM REFS
+        // ============================================
+        
+        const DOM = {
+            scoreCircle: document.getElementById('scoreCircle'),
+            scorePct: document.getElementById('scorePct'),
+            resultTitle: document.getElementById('resultTitle'),
+            resultTestName: document.getElementById('resultTestName'),
+            resultSubtitle: document.getElementById('resultSubtitle'),
+            resultMCQ: document.getElementById('resultMCQ'),
+            resultSub: document.getElementById('resultSub'),
+            resultTotal: document.getElementById('resultTotal'),
+            resultGrade: document.getElementById('resultGrade'),
+            allResults: document.getElementById('allResults')
+        };
+
+        // ============================================
+        // AUTH HANDLER
+        // ============================================
+        
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar')?.classList.toggle('open');
+        });
+
         auth.onAuthStateChanged(async (user) => {
-            if (!user) { window.location.href = 'login.html'; return; }
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
             const params = new URLSearchParams(window.location.search);
             const resultId = params.get('resultId');
+            console.log('🔍 Result ID from URL:', resultId);
+            
             await loadResults(user.uid, resultId);
         });
 
+        // ============================================
+        // LOAD RESULTS
+        // ============================================
+        
         async function loadResults(uid, highlightId) {
-            const results = await callSheetAPI('getUserResults', { uid });
-            if (!results || results.length === 0) return;
-            
-            const latest = highlightId ? results.find(r => r.id === highlightId) || results[0] : results[0];
-            showLatestResult(latest);
-            renderHistory(results);
-        }
+            if (isLoading) return;
+            isLoading = true;
 
-        function showLatestResult(r) {
-            const pct = parseFloat(r.percentage);
-            
-            const circle = document.getElementById('scoreCircle');
-            circle.className = 'score-circle';
-            if (pct >= 80) circle.classList.add('excellent');
-            else if (pct >= 60) circle.classList.add('good');
-            else if (pct >= 40) circle.classList.add('average');
-            else circle.classList.add('poor');
-            
-            document.getElementById('scorePct').textContent = r.percentage + '%';
-            document.getElementById('resultTestName').textContent = r.testTitle;
-            document.getElementById('resultScore').textContent = `${r.score}/${r.total}`;
-            
-            const mins = Math.floor((r.timeTaken || 0) / 60);
-            document.getElementById('resultTime').textContent = mins + 'm';
-            document.getElementById('resultDate').textContent = new Date(r.submittedAt).toLocaleDateString();
-            
-            if (pct >= 80) document.getElementById('resultTitle').textContent = 'Outstanding! 🏆';
-            else if (pct >= 60) document.getElementById('resultTitle').textContent = 'Great Job! 🎉';
-            else if (pct >= 40) document.getElementById('resultTitle').textContent = 'Keep Trying! 💪';
-            else document.getElementById('resultTitle').textContent = 'Need Practice! 📚';
-        }
-
-        function renderHistory(results) {
-            document.getElementById('allResults').innerHTML = results.map(r => `
-                <div class="result-item">
-                    <div class="result-info">
-                        <h4>${r.testTitle}</h4>
-                        <span class="result-date">${new Date(r.submittedAt).toLocaleDateString()}</span>
+            try {
+                console.log('📊 Loading results for user:', uid);
+                
+                // Get user results
+                allResults = await getUserResultsWithCalculations(uid);
+                console.log('📊 All results:', allResults);
+                
+                if (!allResults || allResults.length === 0) {
+                    console.log('⚠️ No results found');
+                    showEmptyState();
+                    return;
+                }
+                
+                // Sort by date (newest first)
+                allResults.sort((a, b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+                console.log('📊 Sorted results:', allResults);
+                
+                // Find the result to highlight
+                let latest = allResults[0];
+                if (highlightId) {
+                    const found = allResults.find(r => r.id === highlightId);
+                    if (found) {
+                        latest = found;
+                        console.log('📊 Highlighted result:', latest);
+                    }
+                }
+                
+                showLatestResult(latest);
+                renderHistory(allResults);
+                
+            } catch (error) {
+                console.error('❌ Error loading results:', error);
+                showToast('Error loading results: ' + error.message, 'error');
+                DOM.allResults.innerHTML = `
+                    <div class="empty-state">
+                        <i class='bx bx-error-circle'></i>
+                        <p>Error loading results</p>
+                        <span class="sub-text">${error.message}</span>
                     </div>
-                    <span class="score-badge ${getClass(r.percentage)}">${r.percentage}%</span>
-                </div>
-            `).join('');
+                `;
+            } finally {
+                isLoading = false;
+            }
         }
 
-        function getClass(pct) {
-            const p = parseFloat(pct);
+        // ============================================
+        // SHOW LATEST RESULT
+        // ============================================
+        
+        function showLatestResult(result) {
+            console.log('📊 Showing result:', result);
+            
+            const pct = parseFloat(result.finalPercentage) || parseFloat(result.percentage) || 0;
+            const grade = result.grade || 'Pending';
+            
+            // Update score circle
+            DOM.scoreCircle.className = 'score-circle';
+            if (grade === 'Pending' || pct === 0) {
+                DOM.scoreCircle.classList.add('pending');
+                DOM.scorePct.textContent = '--';
+                DOM.scorePct.style.fontSize = '2rem';
+            } else {
+                DOM.scorePct.style.fontSize = '3rem';
+                DOM.scorePct.textContent = pct + '%';
+                if (pct >= 80) DOM.scoreCircle.classList.add('excellent');
+                else if (pct >= 60) DOM.scoreCircle.classList.add('good');
+                else if (pct >= 40) DOM.scoreCircle.classList.add('average');
+                else DOM.scoreCircle.classList.add('poor');
+            }
+            
+            // Update title
+            if (grade === 'Pending') {
+                DOM.resultTitle.textContent = '⏳ Pending Review';
+            } else if (pct >= 80) {
+                DOM.resultTitle.textContent = '🏆 Outstanding Performance!';
+            } else if (pct >= 60) {
+                DOM.resultTitle.textContent = '🎉 Great Job!';
+            } else if (pct >= 40) {
+                DOM.resultTitle.textContent = '💪 Keep Improving!';
+            } else {
+                DOM.resultTitle.textContent = '📚 Need More Practice';
+            }
+            
+            DOM.resultTestName.textContent = result.testTitle || 'Unknown Test';
+            DOM.resultSubtitle.textContent = result.submittedAt ? 
+                `Submitted on ${new Date(result.submittedAt).toLocaleDateString('en-IN', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                })}` : '';
+            
+            // Update details
+            const mcqScore = result.mcqScore || result.score || 0;
+            const mcqTotal = result.mcqTotal || result.total || 0;
+            DOM.resultMCQ.textContent = `${mcqScore}/${mcqTotal}`;
+            
+            // Subjective
+            const subMarks = result.subjectiveMarks || {};
+            const subScore = Object.values(subMarks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+            const subTotal = result.subjectiveTotal || 0;
+            if (subTotal > 0 && Object.keys(subMarks).length > 0) {
+                DOM.resultSub.textContent = `${subScore.toFixed(1)}/${subTotal}`;
+            } else if (subTotal > 0) {
+                DOM.resultSub.textContent = `--/${subTotal}`;
+            } else {
+                DOM.resultSub.textContent = 'N/A';
+            }
+            
+            // Total
+            const totalScore = result.totalScore || mcqScore + subScore;
+            const maxScore = result.maxScore || mcqTotal + subTotal;
+            DOM.resultTotal.textContent = `${totalScore}/${maxScore}`;
+            
+            // Grade
+            const displayGrade = grade || 'Pending';
+            DOM.resultGrade.textContent = displayGrade;
+            
+            // Grade color
+            const gradeColors = {
+                'A+': '#059669', 'A': '#059669',
+                'B+': '#d97706', 'B': '#d97706',
+                'C+': '#92400e', 'C': '#991b1b',
+                'F': '#991b1b',
+                'Pending': '#6b7280'
+            };
+            DOM.resultGrade.style.color = gradeColors[displayGrade] || '#6b7280';
+        }
+
+        // ============================================
+        // RENDER HISTORY
+        // ============================================
+        
+        function renderHistory(results) {
+            const container = DOM.allResults;
+            
+            if (!results || results.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class='bx bx-bar-chart-alt-2'></i>
+                        <p>No results yet</p>
+                        <span class="sub-text">Take a test to see your results here!</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = results.map(r => {
+                const pct = parseFloat(r.finalPercentage) || parseFloat(r.percentage) || 0;
+                const grade = r.grade || 'Pending';
+                const isPending = grade === 'Pending' || pct === 0;
+                
+                const scoreClass = isPending ? 'pending' : getScoreClass(pct);
+                const gradeClass = getGradeClass(grade);
+                
+                // Calculate subjective
+                const subMarks = r.subjectiveMarks || {};
+                const subScore = Object.values(subMarks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+                const subTotal = r.subjectiveTotal || 0;
+                const hasSub = subTotal > 0;
+                const isChecked = Object.keys(subMarks).length > 0;
+                
+                return `
+                    <div class="history-item" onclick="showLatestResult(allResults.find(res => res.id === '${r.id}'))">
+                        <div class="history-info">
+                            <h4>${r.testTitle || 'Unknown Test'}</h4>
+                            <div class="history-meta">
+                                <span>📅 ${r.submittedAt ? new Date(r.submittedAt).toLocaleDateString() : 'N/A'}</span>
+                                ${hasSub ? 
+                                    `<span>✍️ ${isChecked ? subScore.toFixed(1) + '/' + subTotal : '--/' + subTotal}</span>` : 
+                                    '<span>📝 MCQ Only</span>'
+                                }
+                                <span>📊 ${r.totalScore || r.score || 0}/${r.maxScore || r.total || 0}</span>
+                            </div>
+                        </div>
+                        <div class="history-score">
+                            <span class="score-badge-sm ${scoreClass}">
+                                ${isPending ? '⏳ Pending' : pct + '%'}
+                            </span>
+                            <span class="grade-badge-sm ${gradeClass}">
+                                ${grade}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================
+        // SHOW EMPTY STATE
+        // ============================================
+        
+        function showEmptyState() {
+            DOM.scoreCircle.className = 'score-circle pending';
+            DOM.scorePct.textContent = '--';
+            DOM.scorePct.style.fontSize = '2rem';
+            DOM.resultTitle.textContent = '📊 No Results Yet';
+            DOM.resultTestName.textContent = 'Complete a test to see your results here';
+            DOM.resultSubtitle.textContent = '';
+            DOM.resultMCQ.textContent = '--/--';
+            DOM.resultSub.textContent = '--/--';
+            DOM.resultTotal.textContent = '--/--';
+            DOM.resultGrade.textContent = '--';
+            
+            DOM.allResults.innerHTML = `
+                <div class="empty-state">
+                    <i class='bx bx-bar-chart-alt-2'></i>
+                    <p>No results yet</p>
+                    <span class="sub-text">Take a test to see your results here!</span>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        
+        function getScoreClass(pct) {
+            const p = parseFloat(pct) || 0;
             if (p >= 80) return 'excellent';
             if (p >= 60) return 'good';
             if (p >= 40) return 'average';
-            return 'needs-work';
+            return 'poor';
         }
+
+        function getGradeClass(grade) {
+            if (!grade || grade === 'Pending') return 'Pending';
+            const map = {
+                'A+': 'Aplus',
+                'A': 'A',
+                'B+': 'Bplus',
+                'B': 'B',
+                'C+': 'Cplus',
+                'C': 'C',
+                'F': 'F'
+            };
+            return map[grade] || 'Pending';
+        }
+
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
+        
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        console.log('✅ Student Results Page Loaded Successfully!');
     </script>
 </body>
 </html>

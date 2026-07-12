@@ -1,99 +1,109 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - CodeShala</title>
-    <link rel="stylesheet" href="../assets/css/student.css">
+     <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <style>
+        .profile-container{max-width:700px;margin:0 auto}
+        .profile-hero{background:white;border-radius:var(--radius-xl);padding:40px 30px;text-align:center;box-shadow:var(--shadow-xs);margin-bottom:24px;border:1px solid var(--border)}
+        .profile-avatar{width:100px;height:100px;border-radius:50%;margin:0 auto 16px;overflow:hidden;border:4px solid var(--primary-light);box-shadow:0 8px 25px rgba(99,102,241,0.2)}
+        .profile-avatar img{width:100%;height:100%;object-fit:cover}
+        .profile-avatar .avatar-fallback{width:100%;height:100%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;font-size:2.5rem;font-weight:700;color:white}
+        .profile-hero h2{font-size:1.5rem;margin-bottom:4px}
+        .profile-hero .email{color:var(--text-secondary);font-size:0.9rem;margin-bottom:4px}
+        .profile-hero .joined{color:var(--text-muted);font-size:0.8rem}
+        .profile-hero .provider-badge{display:inline-block;margin-top:8px;padding:4px 12px;border-radius:20px;font-size:0.75rem;font-weight:600}
+        .provider-google{background:#ea433520;color:#ea4335}
+        .provider-email{background:var(--primary-light);color:var(--primary)}
+        .profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+        .stat-card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;box-shadow:var(--shadow-xs)}
+        .stat-card .num{font-size:2rem;font-weight:800;color:var(--primary)}
+        .stat-card .lbl{font-size:0.8rem;color:var(--text-secondary);margin-top:4px}
+        .settings-card{background:white;border:1px solid var(--border);border-radius:var(--radius-xl);padding:24px;box-shadow:var(--shadow-xs);margin-bottom:24px}
+        .settings-card h3{margin-bottom:16px;font-size:1rem}
+        .setting-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border-light)}
+        .setting-row:last-child{border-bottom:none}
+        .setting-info h4{font-size:0.9rem;margin-bottom:2px}
+        .setting-info p{font-size:0.82rem;color:var(--text-secondary)}
+        .btn-sm{padding:8px 16px;border:1.5px solid var(--border);border-radius:8px;background:white;cursor:pointer;font-weight:500;font-family:'Plus Jakarta Sans',sans-serif;transition:var(--transition)}
+        .btn-sm:hover{border-color:var(--primary);color:var(--primary)}
+        .btn-danger{background:#ef4444;color:white;border:none;padding:12px 24px;border-radius:8px;font-weight:600;cursor:pointer;width:100%}
+        .btn-danger:hover{background:#dc2626}
+        .danger-zone{background:#fef2f2;border:2px solid #fecaca;border-radius:var(--radius-xl);padding:24px;text-align:center}
+        .danger-zone h3{color:#ef4444;margin-bottom:12px}
+        @media(max-width:500px){.profile-stats{grid-template-columns:1fr}}
+    </style>
 </head>
 <body>
-    <div class="dashboard-container">
-        <nav class="sidebar">
-            <div class="logo">
-                <h2>🖥️ CodeShala</h2>
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>Code<span class="grad-text">Shala</span></span></a>
             </div>
-            <ul class="nav-links">
-                <li><a href="dashboard.html">📊 Dashboard</a></li>
-                <li><a href="take-test.html">📝 Take Test</a></li>
-                <li><a href="results.html">📈 My Results</a></li>
-                <li><a href="profile.html" class="active">👤 Profile</a></li>
-                <li><a href="#" onclick="logout()">🚪 Logout</a></li>
-            </ul>
-        </nav>
-
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a>
+                <a href="take-test.html" class="nav-item"><i class='bx bxs-edit-alt'></i><span>Take Test</span></a>
+                <a href="results.html" class="nav-item"><i class='bx bxs-bar-chart-alt-2'></i><span>My Results</span></a>
+                <a href="profile.html" class="nav-item active"><i class='bx bxs-user-circle'></i><span>Profile</span></a>
+            </nav>
+            <div class="sidebar-footer"><a href="#" onclick="logout()" class="nav-item logout"><i class='bx bxs-log-out-circle'></i><span>Logout</span></a></div>
+        </aside>
         <main class="main-content">
-            <header class="top-bar">
-                <h1>👤 My Profile</h1>
-                <span id="userEmail"></span>
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
+                <span style="font-weight:700">My Profile</span>
+                <div></div>
             </header>
-
-            <div class="content-area">
+            <div class="content">
                 <div class="profile-container">
-                    <!-- Profile Card -->
-                    <div class="profile-card">
-                        <div class="profile-avatar">
-                            <span id="avatarLetter">S</span>
+                    <!-- Profile Hero -->
+                    <div class="profile-hero">
+                        <div class="profile-avatar" id="profileAvatar">
+                            <div class="avatar-fallback" id="avatarFallback">S</div>
                         </div>
-                        <div class="profile-info">
-                            <h2 id="profileName">Student Name</h2>
-                            <p id="profileEmail">student@email.com</p>
-                            <p id="profileJoinDate">Joined: --</p>
-                        </div>
+                        <h2 id="profileName">Student Name</h2>
+                        <p class="email" id="profileEmail">email@example.com</p>
+                        <p class="joined" id="profileJoinDate">Joined: --</p>
+                        <span class="provider-badge provider-email" id="providerBadge">📧 Email</span>
                     </div>
 
                     <!-- Stats -->
                     <div class="profile-stats">
-                        <div class="profile-stat-card">
-                            <h3>📝 Tests Taken</h3>
-                            <p id="profileTests">0</p>
-                        </div>
-                        <div class="profile-stat-card">
-                            <h3>⭐ Average Score</h3>
-                            <p id="profileAvgScore">0%</p>
-                        </div>
-                        <div class="profile-stat-card">
-                            <h3>🏆 Highest Score</h3>
-                            <p id="profileHighScore">0%</p>
-                        </div>
+                        <div class="stat-card"><div class="num" id="profileTests">0</div><div class="lbl">📝 Tests Taken</div></div>
+                        <div class="stat-card"><div class="num" id="profileAvgScore">0%</div><div class="lbl">⭐ Avg Score</div></div>
+                        <div class="stat-card"><div class="num" id="profileHighScore">0%</div><div class="lbl">🏆 Highest</div></div>
                     </div>
 
-                    <!-- Account Settings -->
+                    <!-- Settings -->
                     <div class="settings-card">
-                        <h2>⚙️ Account Settings</h2>
-                        
-                        <div class="setting-item">
-                            <div class="setting-info">
-                                <h4>👤 Display Name</h4>
-                                <p id="currentName">Not set</p>
-                            </div>
+                        <h3>⚙️ Account Settings</h3>
+                        <div class="setting-row">
+                            <div class="setting-info"><h4>👤 Display Name</h4><p id="currentName">Not set</p></div>
                             <button onclick="changeName()" class="btn-sm">Edit</button>
                         </div>
-
-                        <div class="setting-item">
-                            <div class="setting-info">
-                                <h4>📧 Email</h4>
-                                <p id="currentEmail">Not set</p>
-                            </div>
-                            <span class="verified-badge">✅ Verified</span>
+                        <div class="setting-row">
+                            <div class="setting-info"><h4>📧 Email</h4><p id="currentEmail">Not set</p></div>
+                            <span style="color:#10b981;font-weight:600;font-size:0.85rem;">✅ Verified</span>
                         </div>
-
-                        <div class="setting-item">
-                            <div class="setting-info">
-                                <h4>🔒 Password</h4>
-                                <p>Change your password</p>
-                            </div>
+                        <div class="setting-row">
+                            <div class="setting-info"><h4>🔒 Password</h4><p>Change your password</p></div>
                             <button onclick="changePassword()" class="btn-sm">Change</button>
                         </div>
                     </div>
 
                     <!-- Danger Zone -->
                     <div class="danger-zone">
-                        <h2>⚠️ Danger Zone</h2>
-                        <button onclick="deleteAccount()" class="btn-danger">
-                            🗑️ Delete My Account
-                        </button>
+                        <h3>⚠️ Danger Zone</h3>
+                        <button onclick="deleteAccount()" class="btn-danger">🗑️ Delete My Account</button>
                     </div>
                 </div>
             </div>
@@ -105,99 +115,73 @@
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
     <script>
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
+        document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open')});
+
+        auth.onAuthStateChanged(async(user)=>{
+            if(!user){window.location.href='login.html';return}
+            
+            const name=user.displayName||'Student';
+            const email=user.email||'';
+            const initial=(name||email||'S')[0].toUpperCase();
+            
+            // Profile Image - Google se aayi ho toh dikhao
+            const avatarContainer=document.getElementById('profileAvatar');
+            if(user.photoURL){
+                avatarContainer.innerHTML=`<img src="${user.photoURL}" alt="Profile" onerror="this.onerror=null;this.parentElement.innerHTML='<div class=\\'avatar-fallback\\'>${initial}</div>'">`;
+            }else{
+                document.getElementById('avatarFallback').textContent=initial;
             }
             
-            // Update basic info
-            document.getElementById('userEmail').textContent = user.email;
-            document.getElementById('profileEmail').textContent = user.email;
-            document.getElementById('currentEmail').textContent = user.email;
-            document.getElementById('avatarLetter').textContent = 
-                (user.displayName || user.email || 'S')[0].toUpperCase();
+            document.getElementById('profileName').textContent=name;
+            document.getElementById('profileEmail').textContent=email;
+            document.getElementById('currentEmail').textContent=email;
+            document.getElementById('currentName').textContent=name||'Not set';
             
-            if (user.displayName) {
-                document.getElementById('profileName').textContent = user.displayName;
-                document.getElementById('currentName').textContent = user.displayName;
-            }
+            // Provider badge
+            const provider=user.providerData[0]?.providerId||'password';
+            const badge=document.getElementById('providerBadge');
+            if(provider==='google.com'){badge.textContent='🔵 Google Account';badge.className='provider-badge provider-google'}
+            else if(provider==='phone'){badge.textContent='📱 Phone';badge.className='provider-badge provider-email'}
+            else{badge.textContent='📧 Email';badge.className='provider-badge provider-email'}
             
-            // Format join date
-            const joinDate = new Date(user.metadata.creationTime);
-            document.getElementById('profileJoinDate').textContent = 
-                'Joined: ' + joinDate.toLocaleDateString('hi-IN', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
+            // Join date
+            const d=new Date(user.metadata.creationTime);
+            document.getElementById('profileJoinDate').textContent='Joined: '+d.toLocaleDateString('en-IN',{year:'numeric',month:'long',day:'numeric'});
             
-            // Load user stats
             await loadUserStats(user.uid);
         });
 
-        async function loadUserStats(uid) {
-            const results = await callSheetAPI('getUserResults', { uid: uid });
-            
-            if (results && results.length > 0) {
-                document.getElementById('profileTests').textContent = results.length;
-                
-                const percentages = results.map(r => parseFloat(r.percentage));
-                const avg = percentages.reduce((a, b) => a + b, 0) / percentages.length;
-                const high = Math.max(...percentages);
-                
-                document.getElementById('profileAvgScore').textContent = avg.toFixed(1) + '%';
-                document.getElementById('profileHighScore').textContent = high.toFixed(1) + '%';
+        async function loadUserStats(uid){
+            const results=await callSheetAPI('getUserResults',{uid});
+            if(results&&results.length>0){
+                document.getElementById('profileTests').textContent=results.length;
+                const pcts=results.map(r=>parseFloat(r.percentage)||0);
+                document.getElementById('profileAvgScore').textContent=(pcts.reduce((a,b)=>a+b,0)/pcts.length).toFixed(1)+'%';
+                document.getElementById('profileHighScore').textContent=Math.max(...pcts).toFixed(1)+'%';
             }
         }
 
-        function changeName() {
-            const newName = prompt('Enter new display name:');
-            if (newName && newName.trim()) {
-                const user = auth.currentUser;
-                user.updateProfile({
-                    displayName: newName.trim()
-                }).then(() => {
-                    document.getElementById('profileName').textContent = newName;
-                    document.getElementById('currentName').textContent = newName;
-                    document.getElementById('avatarLetter').textContent = newName[0].toUpperCase();
-                    showToast('Name updated successfully!', 'success');
-                }).catch(error => {
-                    showToast('Error: ' + error.message, 'error');
-                });
+        function changeName(){
+            const n=prompt('Enter new display name:');
+            if(n&&n.trim()){
+                auth.currentUser.updateProfile({displayName:n.trim()}).then(()=>{
+                    document.getElementById('profileName').textContent=n;
+                    document.getElementById('currentName').textContent=n;
+                    document.getElementById('avatarFallback').textContent=n[0].toUpperCase();
+                    showToast('✅ Name updated!','success');
+                }).catch(e=>showToast(e.message,'error'));
             }
         }
 
-        function changePassword() {
-            const newPassword = prompt('Enter new password (min 6 characters):');
-            if (newPassword && newPassword.length >= 6) {
-                const user = auth.currentUser;
-                user.updatePassword(newPassword).then(() => {
-                    showToast('Password updated successfully!', 'success');
-                }).catch(error => {
-                    showToast('Error: ' + error.message, 'error');
-                });
-            } else {
-                showToast('Password must be at least 6 characters', 'error');
-            }
+        function changePassword(){
+            const p=prompt('Enter new password (min 6 chars):');
+            if(p&&p.length>=6){
+                auth.currentUser.updatePassword(p).then(()=>showToast('✅ Password updated!','success')).catch(e=>showToast(e.message,'error'));
+            }else{showToast('Password must be 6+ characters','error');}
         }
 
-        function deleteAccount() {
-            const confirm = window.confirm(
-                '⚠️ Are you sure you want to delete your account?\n\n' +
-                'This action cannot be undone!\n' +
-                'All your data will be permanently deleted.'
-            );
-            
-            if (confirm) {
-                const user = auth.currentUser;
-                user.delete().then(() => {
-                    alert('Account deleted successfully.');
-                    window.location.href = 'login.html';
-                }).catch(error => {
-                    showToast('Error: ' + error.message, 'error');
-                });
-            }
+        function deleteAccount(){
+            if(confirm('⚠️ Delete your account?\nThis cannot be undone!')){auth.currentUser.delete().then(()=>{alert('Account deleted.');window.location.href='login.html'}).catch(e=>showToast(e.message,'error'))}
         }
     </script>
 </body>

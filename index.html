@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+      <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- ⭐ WEBSITE TITLE -->
     <title>CodeShala — Smart Testing Platform</title>
+    
+       <link rel="icon" type="image/png" href="assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="assets/images/favicon.png">
+    
+    <!-- ⭐ APPLE TOUCH ICON -->
+    <link rel="apple-touch-icon" href="assets/images/favicon.png">
+    
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .features-section { padding: 60px 20px; max-width: 1200px; margin: 0 auto; }
+        .section-title { text-align: center; margin-bottom: 50px; }
+        .section-title h2 { font-size: 2.8rem; font-weight: 700; color: #f0f0f5; }
+        .section-title p { color: #8888a0; font-size: 1.1rem; margin-top: 10px; }
+        .gradient-text { background: linear-gradient(135deg, #7c3aed, #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; }
+        .feature-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; padding: 35px 30px; text-align: center; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .feature-card:hover { transform: translateY(-10px); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .feature-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+        .feature-card h3 { font-size: 1.2rem; font-weight: 600; color: #f0f0f5; margin-bottom: 10px; }
+        .feature-card p { color: #8888a0; font-size: 0.9rem; line-height: 1.6; }
+        @media(max-width: 900px){ .features-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media(max-width: 500px){ .features-grid { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
-    <!-- Animated Background -->
     <div class="bg-animation">
         <div class="bg-orb"></div>
         <div class="bg-orb"></div>
@@ -15,92 +38,41 @@
         <div class="bg-grid"></div>
     </div>
 
-    <!-- Main Content -->
     <div class="landing-container">
         <div class="hero-wrapper">
-            <!-- Left Content -->
             <div class="hero-content">
-                <div class="hero-badge">
-                    <span class="dot"></span>
-                    Platform Active — 500+ Students
-                </div>
-                
-                <h1>
-                    Learn <span class="gradient-text">Smarter</span><br>
-                    Test <span class="gradient-text">Better</span>
-                </h1>
-                
-                <p class="hero-description">
-                    Professional online examination platform designed for modern educators. 
-                    Create tests, track progress, and empower your students with instant feedback.
-                </p>
-                
+                <div class="hero-badge"><span class="dot"></span> Platform Active — 500+ Students</div>
+                <h1>Learn <span class="gradient-text">Smarter</span><br>Test <span class="gradient-text">Better</span></h1>
+                <p class="hero-description">Professional online examination platform designed for modern educators. Create tests, track progress, and empower your students with instant feedback.</p>
                 <div class="hero-buttons">
-                    <a href="student/login.html" class="btn btn-primary">
-                        🎓 Student Portal
-                        <span>→</span>
-                    </a>
-                    <a href="admin/login.html" class="btn btn-glass">
-                        👨‍🏫 Teacher Portal
-                        <span>→</span>
-                    </a>
+                    <a href="student/login.html" class="btn btn-primary">🎓 Student Portal <span>→</span></a>
+                    <a href="admin/login.html" class="btn btn-glass">👨‍🏫 Teacher Portal <span>→</span></a>
                 </div>
-                
                 <div class="hero-stats">
-                    <div class="stat-item">
-                        <h3>100+</h3>
-                        <p>Tests Created</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>500+</h3>
-                        <p>Students Enrolled</p>
-                    </div>
-                    <div class="stat-item">
-                        <h3>99.9%</h3>
-                        <p>Uptime</p>
-                    </div>
+                    <div class="stat-item"><h3>100+</h3><p>Tests Created</p></div>
+                    <div class="stat-item"><h3>500+</h3><p>Students Enrolled</p></div>
+                    <div class="stat-item"><h3>99.9%</h3><p>Uptime</p></div>
                 </div>
             </div>
-            
-            <!-- Right Image -->
             <div class="hero-image">
                 <div class="image-container">
                     <div class="image-glow"></div>
-                    <!-- YAHAN APNI IMAGE KA PATH DALO -->
                     <img src="https://raw.githubusercontent.com/KIS566/imagescodeshala/main/6dff972c-3745-4673-9930-99b2b428878a.png" alt="CodeShala" class="profile-image" onerror="this.style.display='none'">
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Features Section -->
     <div class="features-section">
         <div class="section-title">
             <h2>Why <span class="gradient-text">CodeShala?</span></h2>
             <p>Everything you need for seamless online testing</p>
         </div>
-        
         <div class="features-grid">
-            <div class="feature-card">
-                <span class="feature-icon">⏱️</span>
-                <h3>Timed Exams</h3>
-                <p>Auto-submit with countdown timer for fair assessment</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">📊</span>
-                <h3>Instant Analytics</h3>
-                <p>Real-time results with detailed performance insights</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">🔒</span>
-                <h3>Secure Platform</h3>
-                <p>Anti-cheating with tab switch detection system</p>
-            </div>
-            <div class="feature-card">
-                <span class="feature-icon">☁️</span>
-                <h3>Cloud Powered</h3>
-                <p>Google Sheets backend — reliable & always available</p>
-            </div>
+            <div class="feature-card"><span class="feature-icon">⏱️</span><h3>Timed Exams</h3><p>Auto-submit with countdown timer for fair assessment</p></div>
+            <div class="feature-card"><span class="feature-icon">📊</span><h3>Instant Analytics</h3><p>Real-time results with detailed performance insights</p></div>
+            <div class="feature-card"><span class="feature-icon">🔒</span><h3>Secure Platform</h3><p>Anti-cheating with tab switch detection system</p></div>
+            <div class="feature-card"><span class="feature-icon">☁️</span><h3>Cloud Powered</h3><p>Google Sheets backend — reliable & always available</p></div>
         </div>
     </div>
 </body>

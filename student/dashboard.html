@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - CodeShala</title>
+    <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -11,245 +15,57 @@
 </head>
 <body>
     <div class="dashboard">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <a href="../index.html" class="logo">
-                    <span class="logo-icon">⚡</span>
-                    <span>Code<span class="grad-text">Shala</span></span>
-                </a>
-            </div>
-            
+            <div class="sidebar-header"><a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>Code<span class="grad-text">Shala</span></span></a></div>
             <nav class="sidebar-nav">
-                <a href="dashboard.html" class="nav-item active">
-                    <i class='bx bxs-dashboard'></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="take-test.html" class="nav-item">
-                    <i class='bx bxs-edit-alt'></i>
-                    <span>Take Test</span>
-                </a>
-                <a href="results.html" class="nav-item">
-                    <i class='bx bxs-bar-chart-alt-2'></i>
-                    <span>My Results</span>
-                </a>
-                <a href="profile.html" class="nav-item">
-                    <i class='bx bxs-user-circle'></i>
-                    <span>Profile</span>
-                </a>
+                <a href="dashboard.html" class="nav-item active"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a>
+                <a href="take-test.html" class="nav-item"><i class='bx bxs-edit-alt'></i><span>Take Test</span></a>
+                <a href="results.html" class="nav-item"><i class='bx bxs-bar-chart-alt-2'></i><span>My Results</span></a>
+                <a href="profile.html" class="nav-item"><i class='bx bxs-user-circle'></i><span>Profile</span></a>
             </nav>
-            
-            <div class="sidebar-footer">
-                <a href="#" onclick="logout()" class="nav-item logout">
-                    <i class='bx bxs-log-out-circle'></i>
-                    <span>Logout</span>
-                </a>
-            </div>
+            <div class="sidebar-footer"><a href="#" onclick="logout()" class="nav-item logout"><i class='bx bxs-log-out-circle'></i><span>Logout</span></a></div>
         </aside>
-
-        <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Bar -->
             <header class="topbar">
-                <button class="menu-toggle" id="menuToggle">
-                    <i class='bx bx-menu'></i>
-                </button>
-                <div class="search-bar">
-                    <i class='bx bx-search'></i>
-                    <input type="text" placeholder="Search tests...">
-                </div>
-                <div class="topbar-right">
-                    <div class="notification-bell">
-                        <i class='bx bxs-bell'></i>
-                        <span class="bell-dot"></span>
-                    </div>
-                    <div class="user-avatar" id="userAvatar">
-                        <span id="avatarInitial">S</span>
-                    </div>
-                </div>
+                <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
+                <div class="search-bar"><i class='bx bx-search'></i><input type="text" placeholder="Search tests..."></div>
+                <div class="topbar-right"><div class="user-avatar" id="userAvatar"><span id="avatarInitial">S</span></div></div>
             </header>
-
-            <!-- Content Area -->
             <div class="content">
-                <!-- Welcome Section -->
                 <div class="welcome-section">
-                    <div class="welcome-text">
-                        <h1>Welcome back, <span id="studentName">Student</span>! 👋</h1>
-                        <p>Ready to ace your next test? Here's your progress overview.</p>
-                    </div>
-                    <div class="welcome-actions">
-                        <a href="take-test.html" class="btn btn-primary">
-                            <i class='bx bx-play-circle'></i> Start New Test
-                        </a>
-                    </div>
+                    <div class="welcome-text"><h1>Welcome back, <span id="studentName">Student</span>! 👋</h1><p>Ready to ace your next test? Here's your progress overview.</p></div>
                 </div>
-
-                <!-- Stats Cards -->
                 <div class="stats-grid">
-                    <div class="stat-card purple">
-                        <div class="stat-icon">
-                            <i class='bx bxs-file'></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="totalTests">0</span>
-                            <span class="stat-label">Total Tests</span>
-                        </div>
-                    </div>
-                    <div class="stat-card green">
-                        <div class="stat-icon">
-                            <i class='bx bxs-check-circle'></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="completedTests">0</span>
-                            <span class="stat-label">Completed</span>
-                        </div>
-                    </div>
-                    <div class="stat-card blue">
-                        <div class="stat-icon">
-                            <i class='bx bxs-star'></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="avgScore">0%</span>
-                            <span class="stat-label">Average Score</span>
-                        </div>
-                    </div>
-                    <div class="stat-card orange">
-                        <div class="stat-icon">
-                            <i class='bx bxs-trophy'></i>
-                        </div>
-                        <div class="stat-info">
-                            <span class="stat-number" id="highestScore">0%</span>
-                            <span class="stat-label">Highest Score</span>
-                        </div>
-                    </div>
+                    <div class="stat-card purple"><div class="stat-icon"><i class='bx bxs-file'></i></div><div class="stat-info"><span class="stat-number" id="totalTests">0</span><span class="stat-label">Total Tests</span></div></div>
+                    <div class="stat-card green"><div class="stat-icon"><i class='bx bxs-check-circle'></i></div><div class="stat-info"><span class="stat-number" id="completedTests">0</span><span class="stat-label">Completed</span></div></div>
+                    <div class="stat-card blue"><div class="stat-icon"><i class='bx bxs-star'></i></div><div class="stat-info"><span class="stat-number" id="avgScore">0%</span><span class="stat-label">Average Score</span></div></div>
+                    <div class="stat-card orange"><div class="stat-icon"><i class='bx bxs-trophy'></i></div><div class="stat-info"><span class="stat-number" id="highestScore">0%</span><span class="stat-label">Highest Score</span></div></div>
                 </div>
-
-                <!-- Two Column Layout -->
                 <div class="content-grid">
-                    <!-- Available Tests -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>📋 Available Tests</h2>
-                            <a href="take-test.html" class="view-all">View All →</a>
-                        </div>
-                        <div class="card-body" id="testList">
-                            <div class="empty-state">
-                                <i class='bx bx-test-tube'></i>
-                                <p>No tests available right now</p>
-                                <span>Check back later for new tests!</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recent Results -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h2>🏆 Recent Results</h2>
-                            <a href="results.html" class="view-all">View All →</a>
-                        </div>
-                        <div class="card-body" id="recentResults">
-                            <div class="empty-state">
-                                <i class='bx bx-bar-chart-alt-2'></i>
-                                <p>No results yet</p>
-                                <span>Take your first test to see results!</span>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card"><div class="card-header"><h2>📋 Available Tests</h2></div><div class="card-body" id="testList"><div class="empty-state"><i class='bx bx-test-tube'></i><p>Loading tests...</p></div></div></div>
+                    <div class="card"><div class="card-header"><h2>🏆 Recent Results</h2></div><div class="card-body" id="recentResults"><div class="empty-state"><i class='bx bx-bar-chart-alt-2'></i><p>No results yet</p></div></div></div>
                 </div>
             </div>
         </main>
     </div>
-
     <script src="../assets/js/firebase-config.js"></script>
     <script src="../assets/js/sheets-api.js"></script>
     <script src="../assets/js/auth.js"></script>
     <script src="../assets/js/common.js"></script>
     <script>
-        // Mobile menu toggle
-        document.getElementById('menuToggle').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
-
-        // Auth check
-        auth.onAuthStateChanged(async (user) => {
-            if (!user) {
-                window.location.href = 'login.html';
-                return;
-            }
-            
-            const initial = (user.displayName || user.email || 'S')[0].toUpperCase();
-            document.getElementById('avatarInitial').textContent = initial;
-            document.getElementById('studentName').textContent = user.displayName || 'Student';
-            
-            await loadDashboard(user.uid);
-        });
-
-        async function loadDashboard(uid) {
-            const tests = await callSheetAPI('getTests', { status: 'active' });
-            const results = await callSheetAPI('getUserResults', { uid: uid });
-            
-            if (tests && tests.length > 0) {
-                renderTests(tests);
-            }
-            
-            if (results && results.length > 0) {
-                renderResults(results.slice(0, 5));
-                updateStats(results);
-            }
+        document.getElementById('menuToggle').addEventListener('click',()=>{document.getElementById('sidebar').classList.toggle('open')});
+        auth.onAuthStateChanged(async(user)=>{if(!user){window.location.href='login.html';return}document.getElementById('avatarInitial').textContent=(user.displayName||user.email||'S')[0].toUpperCase();document.getElementById('studentName').textContent=user.displayName||'Student';await loadDashboard(user.uid)});
+        async function loadDashboard(uid){
+            const tests=await callSheetAPI('getAllTests');
+            const activeTests=tests?tests.filter(t=>t.status==='active'):[];
+            if(activeTests&&activeTests.length>0){renderTests(activeTests)}else{document.getElementById('testList').innerHTML='<div class="empty-state"><i class="bx bx-test-tube"></i><p>No active tests available</p></div>'}
+            const results=await callSheetAPI('getUserResults',{uid:uid});
+            if(results&&results.length>0){renderResults(results.slice(0,5));updateStats(results)}
         }
-
-        function renderTests(tests) {
-            const html = tests.map(test => `
-                <div class="test-item">
-                    <div class="test-info">
-                        <h3>${test.title}</h3>
-                        <div class="test-meta">
-                            <span><i class='bx bx-time-five'></i> ${test.duration} mins</span>
-                            <span><i class='bx bx-calendar'></i> ${test.date || 'Any time'}</span>
-                        </div>
-                    </div>
-                    <a href="take-test.html?id=${test.id}" class="btn btn-sm btn-primary">Start</a>
-                </div>
-            `).join('');
-            
-            document.getElementById('testList').innerHTML = html;
-        }
-
-        function renderResults(results) {
-            const html = results.map(r => `
-                <div class="result-item">
-                    <div class="result-info">
-                        <h4>${r.testTitle}</h4>
-                        <span class="result-date">${formatDate(r.submittedAt)}</span>
-                    </div>
-                    <div class="result-score">
-                        <span class="score-badge ${getScoreClass(r.percentage)}">${r.percentage}%</span>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('recentResults').innerHTML = html;
-        }
-
-        function updateStats(results) {
-            document.getElementById('totalTests').textContent = results.length;
-            document.getElementById('completedTests').textContent = results.length;
-            
-            const scores = results.map(r => parseFloat(r.percentage));
-            const avg = (scores.reduce((a,b) => a+b, 0) / scores.length).toFixed(1);
-            const high = Math.max(...scores).toFixed(1);
-            
-            document.getElementById('avgScore').textContent = avg + '%';
-            document.getElementById('highestScore').textContent = high + '%';
-        }
-
-        function getScoreClass(pct) {
-            const p = parseFloat(pct);
-            if (p >= 80) return 'excellent';
-            if (p >= 60) return 'good';
-            if (p >= 40) return 'average';
-            return 'needs-work';
-        }
+        function renderTests(tests){document.getElementById('testList').innerHTML=tests.map(test=>`<div class="test-item"><div class="test-info"><h3>${test.title}</h3><div class="test-meta"><span><i class='bx bx-time-five'></i> ${test.duration||'?'} mins</span><span>${test.description||''}</span></div></div><a href="take-test.html?id=${test.id}" class="btn btn-sm btn-primary">Start Test</a></div>`).join('')}
+        function renderResults(results){document.getElementById('recentResults').innerHTML=results.map(r=>`<div class="result-item"><div class="result-info"><h4>${r.testTitle}</h4><span class="result-date">${r.submittedAt?new Date(r.submittedAt).toLocaleDateString():'N/A'}</span></div><span class="score-badge ${getScoreClass(r.percentage)}">${r.percentage}%</span></div>`).join('')}
+        function updateStats(results){document.getElementById('totalTests').textContent=results.length;document.getElementById('completedTests').textContent=results.length;const scores=results.map(r=>parseFloat(r.percentage)||0);if(scores.length>0){document.getElementById('avgScore').textContent=(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1)+'%';document.getElementById('highestScore').textContent=Math.max(...scores).toFixed(1)+'%'}}
+        function getScoreClass(pct){const p=parseFloat(pct)||0;if(p>=80)return'excellent';if(p>=60)return'good';if(p>=40)return'average';return'needs-work'}
     </script>
 </body>
 </html>
