@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Answers - CodeShala Admin</title>
+     <!-- ⭐ FAVICON - Sahi Path (.. ke saath) -->
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="shortcut icon" type="image/png" href="../assets/images/favicon.png">
+    <link rel="apple-touch-icon" href="../assets/images/favicon.png">
+    <link rel="stylesheet" href="../assets/css/dashboard.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <style>
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: white;
+            padding: 16px 20px;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-xs);
+        }
+        .filter-bar select {
+            padding: 10px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: white;
+            font-size: .88rem;
+            outline: none;
+            min-width: 150px;
+        }
+        .filter-bar select:focus {
+            border-color: var(--primary);
+        }
+        
+        .stats-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+        .stat-box {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-xs);
+        }
+        .stat-box .number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+        .stat-box .label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+        .stat-box .number.pending { color: #f59e0b; }
+        .stat-box .number.checked { color: #10b981; }
+        
+        .answer-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-xs);
+            transition: var(--transition);
+        }
+        .answer-card:hover {
+            box-shadow: var(--shadow);
+        }
+        
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .student-info h4 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+        .student-info span {
+            font-size: .82rem;
+            color: var(--text-secondary);
+        }
+        
+        .score-summary {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .score-badge-sm {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: .78rem;
+            font-weight: 700;
+        }
+        .score-badge-sm.mcq { background: #dbeafe; color: #2563eb; }
+        .score-badge-sm.sub { background: #fef3c7; color: #d97706; }
+        .score-badge-sm.total { background: #d1fae5; color: #059669; }
+        .score-badge-sm.percentage { background: var(--primary-light); color: var(--primary); }
+        
+        .question-box {
+            background: var(--bg);
+            padding: 16px;
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            border-left: 3px solid var(--primary);
+        }
+        .question-box:last-child { margin-bottom: 0; }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .q-label { font-weight: 600; font-size: .9rem; }
+        .max-marks { font-size: .8rem; color: var(--text-secondary); background: var(--bg); padding: 2px 10px; border-radius: 12px; }
+        
+        .answer-text {
+            background: white;
+            border: 1px solid var(--border-light);
+            padding: 14px;
+            border-radius: 8px;
+            line-height: 1.7;
+            margin-bottom: 12px;
+            white-space: pre-wrap;
+            font-size: .9rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .marking-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .marking-row label { font-weight: 600; font-size: .85rem; }
+        .marking-row input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            outline: none;
+            transition: var(--transition);
+        }
+        .marking-row input[type="number"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99,102,241,.1);
+        }
+        .marking-row .max-marks-text { color: var(--text-muted); font-weight: 500; font-size: .85rem; }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: .78rem;
+        }
+        .status-badge.pending { background: #fef3c7; color: #d97706; }
+        .status-badge.checked { background: #d1fae5; color: #059669; }
+        
+        .btn-sm {
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .8rem;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: var(--transition);
+        }
+        .btn-sm:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-sm.full { background: #10b981; color: white; border-color: #10b981; }
+        .btn-sm.full:hover { background: #059669; border-color: #059669; }
+        .btn-sm.zero { background: #ef4444; color: white; border-color: #ef4444; }
+        .btn-sm.zero:hover { background: #dc2626; border-color: #dc2626; }
+        
+        .btn-save-all {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .btn-save-all:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99,102,241,.35);
+        }
+        .btn-save-all:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i { font-size: 3rem; margin-bottom: 12px; opacity: .4; display: block; }
+        .empty-state p { font-size: 1rem; }
+        .empty-state .sub-text { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .save-container { text-align: center; margin-top: 20px; display: none; }
+        .save-container.show { display: block; }
+        
+        .loader-container { text-align: center; padding: 40px; }
+        .loader { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .toast { position: fixed; top: 20px; right: 20px; padding: 14px 24px; border-radius: 12px; color: white; font-weight: 600; z-index: 10000; animation: slideIn 0.5s ease; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .toast.success { background: #10b981; }
+        .toast.error { background: #ef4444; }
+        .toast.info { background: #3b82f6; }
+        .toast.warning { background: #f59e0b; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        
+        @media (max-width: 768px) {
+            .stats-summary { grid-template-columns: repeat(2, 1fr); }
+            .answer-header { flex-direction: column; }
+            .score-summary { width: 100%; }
+            .filter-bar { flex-direction: column; }
+            .filter-bar select { width: 100%; }
+        }
+        @media (max-width: 500px) {
+            .stats-summary { grid-template-columns: 1fr; }
+            .marking-row { flex-direction: column; align-items: stretch; }
+            .marking-row input[type="number"] { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="../index.html" class="logo"><span class="logo-icon">⚡</span><span>Code<span class="grad-text">Shala</span></span></a>
+                <span class="admin-badge">Admin</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-item"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a>
+                <a href="create-test.html" class="nav-item"><i class='bx bxs-plus-circle'></i><span>Create Test</span></a>
+                <a href="add-questions.html" class="nav-item"><i class='bx bxs-help-circle'></i><span>Add Questions</span></a>
+                <a href="view-results.html" class="nav-item"><i class='bx bxs-bar-chart-alt-2'></i><span>View Results</span></a>
+                <a href="check-answers.html" class="nav-item active"><i class='bx bxs-check-shield'></i><span>Check Answers</span></a>
+                <a href="manage-students.html" class="nav-item"><i class='bx bxs-group'></i><span>Students</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()" class="nav-item logout"><i class='bx bxs-log-out-circle'></i><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <button class="menu-toggle" id="menuToggle"><i class='bx bx-menu'></i></button>
+                <span style="font-weight:700">✍️ Check Subjective Answers</span>
+                <span class="admin-email" id="adminEmail"></span>
+            </header>
+
+            <div class="content">
+                <div class="filter-bar">
+                    <select id="testFilter" onchange="loadSubmissions()">
+                        <option value="all">📋 All Tests</option>
+                    </select>
+                    <select id="statusFilter" onchange="applyFilters()">
+                        <option value="all">📊 All Status</option>
+                        <option value="pending">⏳ Pending</option>
+                        <option value="checked">✅ Checked</option>
+                    </select>
+                    <button class="btn-sm full" onclick="markAllChecked()">✅ Mark All Checked</button>
+                    <button class="btn-sm" onclick="refreshData()">🔄 Refresh</button>
+                </div>
+
+                <div class="stats-summary" id="statsSummary">
+                    <div class="stat-box"><span class="number" id="totalCount">0</span><span class="label">📝 Total Submissions</span></div>
+                    <div class="stat-box"><span class="number pending" id="pendingCount">0</span><span class="label">⏳ Pending</span></div>
+                    <div class="stat-box"><span class="number checked" id="checkedCount">0</span><span class="label">✅ Checked</span></div>
+                    <div class="stat-box"><span class="number" id="avgSubScore">0</span><span class="label">📊 Avg Subjective Score</span></div>
+                </div>
+
+                <div id="submissionsList">
+                    <div class="loader-container">
+                        <div class="loader"></div>
+                        <p style="margin-top:12px;color:var(--text-secondary);">Loading submissions...</p>
+                    </div>
+                </div>
+
+                <div class="save-container" id="saveContainer">
+                    <button class="btn-save-all" id="saveAllBtn" onclick="saveAllMarks()">💾 Save All Marks & Update Scores</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../assets/js/firebase-config.js"></script>
+    <script src="../assets/js/sheets-api.js"></script>
+    <script src="../assets/js/auth.js"></script>
+    <script src="../assets/js/common.js"></script>
+
+    <script>
+        // ============================================
+        // STATE
+        // ============================================
+        
+        let state = {
+            allSubmissions: [],
+            filteredSubmissions: [],
+            currentMarks: {},
+            isSaving: false,
+            isLoading: false
+        };
+
+        // ============================================
+        // DOM REFS
+        // ============================================
+        
+        const DOM = {
+            testFilter: document.getElementById('testFilter'),
+            statusFilter: document.getElementById('statusFilter'),
+            submissionsList: document.getElementById('submissionsList'),
+            saveContainer: document.getElementById('saveContainer'),
+            saveAllBtn: document.getElementById('saveAllBtn'),
+            totalCount: document.getElementById('totalCount'),
+            pendingCount: document.getElementById('pendingCount'),
+            checkedCount: document.getElementById('checkedCount'),
+            avgSubScore: document.getElementById('avgSubScore'),
+            adminEmail: document.getElementById('adminEmail')
+        };
+
+        // ============================================
+        // TOAST FUNCTION
+        // ============================================
+        
+        function showToast(message, type = 'success') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // ============================================
+        // AUTH HANDLER
+        // ============================================
+        
+        document.getElementById('menuToggle')?.addEventListener('click', () => {
+            document.getElementById('sidebar')?.classList.toggle('open');
+        });
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            DOM.adminEmail.textContent = user.email;
+            await loadTests();
+            await loadSubmissions();
+        });
+
+        // ============================================
+        // LOAD TESTS
+        // ============================================
+        
+        async function loadTests() {
+            try {
+                const tests = await getAllTests();
+                console.log('📋 Tests loaded:', tests);
+                if (tests && Array.isArray(tests)) {
+                    DOM.testFilter.innerHTML = '<option value="all">📋 All Tests</option>';
+                    tests.forEach(test => {
+                        const opt = document.createElement('option');
+                        opt.value = test.id;
+                        opt.textContent = test.title;
+                        DOM.testFilter.appendChild(opt);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading tests:', error);
+            }
+        }
+
+        // ============================================
+        // LOAD SUBMISSIONS
+        // ============================================
+        
+        async function loadSubmissions() {
+            if (state.isLoading) return;
+            state.isLoading = true;
+            
+            showLoader('Loading submissions...');
+
+            try {
+                const testId = DOM.testFilter.value;
+                
+                let results = await getAllResultsWithCalculations();
+                console.log('📊 All results:', results);
+                
+                if (testId !== 'all') {
+                    results = results.filter(r => r.testId === testId);
+                }
+                
+                const withSubjective = results.filter(r => {
+                    let hasSubjective = false;
+                    
+                    const subAnswers = r.subjectiveAnswers || {};
+                    if (Object.keys(subAnswers).length > 0) {
+                        hasSubjective = true;
+                    }
+                    
+                    if (!hasSubjective && r.answers) {
+                        const answers = typeof r.answers === 'string' ? JSON.parse(r.answers) : r.answers;
+                        if (answers && typeof answers === 'object') {
+                            for (const [key, value] of Object.entries(answers)) {
+                                if (typeof value === 'string' && value.length > 3 && !['A', 'B', 'C', 'D'].includes(value.trim())) {
+                                    hasSubjective = true;
+                                    if (!r.subjectiveAnswers) r.subjectiveAnswers = {};
+                                    r.subjectiveAnswers[key] = value;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    return hasSubjective;
+                });
+                
+                console.log('📊 Results with subjective:', withSubjective.length);
+                
+                state.currentMarks = {};
+                for (const result of withSubjective) {
+                    const marks = result.subjectiveMarks || {};
+                    state.currentMarks[result.id] = { ...marks };
+                }
+                
+                state.allSubmissions = withSubjective;
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Error loading submissions:', error);
+                showToast('Error loading submissions', 'error');
+            } finally {
+                state.isLoading = false;
+            }
+        }
+
+        // ============================================
+        // SHOW LOADER
+        // ============================================
+        
+        function showLoader(message) {
+            DOM.submissionsList.innerHTML = `
+                <div class="loader-container">
+                    <div class="loader"></div>
+                    <p style="margin-top:12px;color:var(--text-secondary);">${message || 'Loading...'}</p>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // APPLY FILTERS
+        // ============================================
+        
+        function applyFilters() {
+            const status = DOM.statusFilter.value;
+            
+            let filtered = [...state.allSubmissions];
+            
+            if (status === 'pending') {
+                filtered = filtered.filter(r => {
+                    const marks = state.currentMarks[r.id] || {};
+                    const hasMarks = Object.values(marks).some(m => m !== '' && m !== null && m !== undefined);
+                    return !hasMarks;
+                });
+            } else if (status === 'checked') {
+                filtered = filtered.filter(r => {
+                    const marks = state.currentMarks[r.id] || {};
+                    const hasMarks = Object.values(marks).some(m => m !== '' && m !== null && m !== undefined);
+                    return hasMarks;
+                });
+            }
+            
+            state.filteredSubmissions = filtered;
+            renderSubmissions(filtered);
+            updateStats(filtered);
+            
+            const hasMarks = Object.keys(state.currentMarks).length > 0;
+            DOM.saveContainer.classList.toggle('show', hasMarks && filtered.length > 0);
+        }
+
+        // ============================================
+        // RENDER SUBMISSIONS
+        // ============================================
+        
+        function renderSubmissions(submissions) {
+            const container = DOM.submissionsList;
+            
+            if (!submissions || submissions.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class='bx bx-check-shield'></i>
+                        <p>No subjective answers to check</p>
+                        <span class="sub-text">Submissions will appear here when students complete tests with subjective questions.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            for (const sub of submissions) {
+                const marks = state.currentMarks[sub.id] || {};
+                const isChecked = Object.values(marks).some(m => m !== '' && m !== null && m !== undefined);
+                
+                const subAnswers = sub.subjectiveAnswers || {};
+                
+                html += `
+                    <div class="answer-card" data-result-id="${sub.id}">
+                        <div class="answer-header">
+                            <div class="student-info">
+                                <h4>👤 ${sub.studentEmail || 'Unknown'}</h4>
+                                <span>📋 ${sub.testTitle || 'Unknown Test'}</span>
+                                <span>📅 ${sub.submittedAt ? new Date(sub.submittedAt).toLocaleDateString() : 'N/A'}</span>
+                            </div>
+                            <div class="score-summary">
+                                <span class="score-badge-sm mcq">📝 MCQ: ${sub.mcqScore || 0}/${sub.mcqTotal || 0}</span>
+                                <span class="score-badge-sm sub">✍️ Sub: ${calculateSubTotal(sub.id)}/${sub.subjectiveTotal || 0}</span>
+                                <span class="score-badge-sm total">📊 Total: ${sub.totalScore || 0}/${sub.maxScore || 0}</span>
+                                <span class="score-badge-sm percentage">${sub.finalPercentage || 0}%</span>
+                                <span class="status-badge ${isChecked ? 'checked' : 'pending'}">
+                                    ${isChecked ? '✅ Checked' : '⏳ Pending'}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        ${renderQuestions(sub, marks)}
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+
+        // ============================================
+        // RENDER QUESTIONS
+        // ============================================
+        
+        function renderQuestions(result, marks) {
+            const answers = result.subjectiveAnswers || {};
+            const subTotal = result.subjectiveTotal || 0;
+            
+            if (Object.keys(answers).length === 0) {
+                return `<div style="color:var(--text-muted);padding:10px;">No subjective answers</div>`;
+            }
+            
+            let html = '';
+            let currentSubTotal = 0;
+            const questionKeys = Object.keys(answers);
+            const maxPerQuestion = subTotal > 0 ? Math.ceil(subTotal / questionKeys.length) : 5;
+            
+            for (const [qId, answer] of Object.entries(answers)) {
+                const maxMarks = maxPerQuestion;
+                const mark = marks[qId] !== undefined ? marks[qId] : '';
+                const isChecked = mark !== '' && mark !== null && mark !== undefined;
+                const safeId = `${result.id}_${qId}`.replace(/[^a-zA-Z0-9]/g, '_');
+                
+                if (isChecked) {
+                    currentSubTotal += parseFloat(mark) || 0;
+                }
+                
+                html += `
+                    <div class="question-box">
+                        <div class="question-header">
+                            <span class="q-label">📝 ${qId}</span>
+                            <span class="max-marks">Max: ${maxMarks} marks</span>
+                        </div>
+                        <div class="answer-text">${escapeHtml(answer || 'No answer provided')}</div>
+                        <div class="marking-row">
+                            <label>Marks:</label>
+                            <input type="number" 
+                                   id="mark_${safeId}"
+                                   class="mark-input"
+                                   data-result="${result.id}"
+                                   data-question="${qId}"
+                                   value="${mark}" 
+                                   min="0" 
+                                   max="${maxMarks}" 
+                                   step="0.5"
+                                   onchange="onMarkChange('${result.id}', '${qId}', this.value)">
+                            <span class="max-marks-text">/ ${maxMarks}</span>
+                            <span class="status-badge ${isChecked ? 'checked' : 'pending'}">
+                                ${isChecked ? '✅ Checked' : '⏳ Pending'}
+                            </span>
+                            <button class="btn-sm full" onclick="setFullMarks('${result.id}', '${qId}', ${maxMarks})">⭐ Full</button>
+                            <button class="btn-sm zero" onclick="setZeroMarks('${result.id}', '${qId}')">⭕ Zero</button>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `
+                <div style="margin-top:12px;padding:12px;background:var(--primary-light);border-radius:var(--radius);text-align:center;font-weight:600;">
+                    📊 Subjective Total: ${currentSubTotal.toFixed(1)} / ${subTotal}
+                </div>
+            `;
+            
+            return html;
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function calculateSubTotal(resultId) {
+            const marks = state.currentMarks[resultId] || {};
+            return Object.values(marks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+        }
+
+        // ============================================
+        // MARK CHANGE HANDLERS
+        // ============================================
+        
+        function onMarkChange(resultId, questionId, value) {
+            if (!state.currentMarks[resultId]) {
+                state.currentMarks[resultId] = {};
+            }
+            state.currentMarks[resultId][questionId] = value === '' ? '' : parseFloat(value);
+            
+            const calculated = calculateUpdatedTotals(resultId);
+            updateUIForResult(resultId, calculated);
+            debounceSave(resultId);
+        }
+
+        function setFullMarks(resultId, questionId, maxMarks) {
+            const input = document.querySelector(`[data-result="${resultId}"][data-question="${questionId}"]`);
+            if (input) {
+                input.value = maxMarks;
+                onMarkChange(resultId, questionId, maxMarks);
+            }
+        }
+
+        function setZeroMarks(resultId, questionId) {
+            const input = document.querySelector(`[data-result="${resultId}"][data-question="${questionId}"]`);
+            if (input) {
+                input.value = 0;
+                onMarkChange(resultId, questionId, 0);
+            }
+        }
+
+        // ============================================
+        // CALCULATE UPDATED TOTALS
+        // ============================================
+        
+        function calculateUpdatedTotals(resultId) {
+            const result = state.allSubmissions.find(r => r.id === resultId);
+            if (!result) return null;
+            
+            const marks = state.currentMarks[resultId] || {};
+            const mcqScore = parseFloat(result.mcqScore) || 0;
+            const mcqTotal = parseFloat(result.mcqTotal) || 0;
+            const subTotal = parseFloat(result.subjectiveTotal) || 0;
+            const subScore = Object.values(marks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+            
+            const totalScore = mcqScore + subScore;
+            const maxScore = mcqTotal + subTotal;
+            const percentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+            const finalPercentage = parseFloat(percentage.toFixed(1));
+            const grade = calculateGrade(finalPercentage);
+            
+            return {
+                subScore,
+                subTotal,
+                totalScore,
+                maxScore,
+                finalPercentage,
+                grade,
+                mcqScore,
+                mcqTotal
+            };
+        }
+
+        // ============================================
+        // UPDATE UI FOR RESULT
+        // ============================================
+        
+        function updateUIForResult(resultId, calculated) {
+            if (!calculated) return;
+            
+            const card = document.querySelector(`.answer-card[data-result-id="${resultId}"]`);
+            if (!card) return;
+            
+            const badges = card.querySelectorAll('.score-badge-sm');
+            if (badges.length >= 4) {
+                badges[0].textContent = `📝 MCQ: ${calculated.mcqScore}/${calculated.mcqTotal}`;
+                badges[1].textContent = `✍️ Sub: ${calculated.subScore.toFixed(1)}/${calculated.subTotal}`;
+                badges[2].textContent = `📊 Total: ${calculated.totalScore}/${calculated.maxScore}`;
+                badges[3].textContent = `${calculated.finalPercentage}%`;
+            }
+            
+            const statusBadge = card.querySelector('.status-badge');
+            if (statusBadge) {
+                const hasMarks = Object.values(state.currentMarks[resultId] || {}).some(m => m !== '' && m !== null && m !== undefined);
+                if (hasMarks) {
+                    statusBadge.textContent = '✅ Checked';
+                    statusBadge.className = 'status-badge checked';
+                } else {
+                    statusBadge.textContent = '⏳ Pending';
+                    statusBadge.className = 'status-badge pending';
+                }
+            }
+        }
+
+        // ============================================
+        // DEBOUNCE SAVE
+        // ============================================
+        
+        let saveTimeouts = {};
+
+        function debounceSave(resultId) {
+            if (saveTimeouts[resultId]) {
+                clearTimeout(saveTimeouts[resultId]);
+            }
+            
+            saveTimeouts[resultId] = setTimeout(async () => {
+                await saveSingleResult(resultId);
+                delete saveTimeouts[resultId];
+            }, 1500);
+        }
+
+        // ============================================
+        // SAVE SINGLE RESULT (FIXED)
+        // ============================================
+        
+        async function saveSingleResult(resultId) {
+            const marks = state.currentMarks[resultId] || {};
+            
+            const updates = Object.entries(marks)
+                .filter(([_, mark]) => mark !== '' && mark !== null && mark !== undefined)
+                .map(([qId, mark]) => ({
+                    questionId: qId,
+                    marks: parseFloat(mark) || 0
+                }));
+            
+            if (updates.length === 0) return;
+            
+            try {
+                const result = await batchUpdateSubjectiveMarks(resultId, updates);
+                console.log('📡 Save result:', result);
+                
+                if (result && result.success) {
+                    const sub = state.allSubmissions.find(r => r.id === resultId);
+                    if (sub) {
+                        const marksObj = state.currentMarks[resultId] || {};
+                        const mcqScore = parseFloat(sub.mcqScore) || 0;
+                        const mcqTotal = parseFloat(sub.mcqTotal) || 0;
+                        const subTotal = parseFloat(sub.subjectiveTotal) || 0;
+                        const subScore = Object.values(marksObj).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+                        const totalScore = mcqScore + subScore;
+                        const maxScore = mcqTotal + subTotal;
+                        const percentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+                        const finalPercentage = parseFloat(percentage.toFixed(1));
+                        const grade = calculateGrade(finalPercentage);
+                        
+                        sub.totalScore = totalScore;
+                        sub.maxScore = maxScore;
+                        sub.finalPercentage = finalPercentage;
+                        sub.grade = grade;
+                        sub.subjectiveMarks = marksObj;
+                    }
+                    
+                    const calculated = calculateUpdatedTotals(resultId);
+                    if (calculated) {
+                        updateUIForResult(resultId, calculated);
+                    }
+                    updateStats(state.filteredSubmissions);
+                }
+            } catch (error) {
+                console.error('Error saving marks:', error);
+            }
+        }
+
+        // ============================================
+        // SAVE ALL MARKS (FIXED)
+        // ============================================
+        
+        async function saveAllMarks() {
+            if (state.isSaving) return;
+            state.isSaving = true;
+            DOM.saveAllBtn.disabled = true;
+            DOM.saveAllBtn.textContent = '⏳ Saving...';
+            
+            let saved = 0;
+            let errors = 0;
+            
+            try {
+                for (const resultId of Object.keys(state.currentMarks)) {
+                    const marks = state.currentMarks[resultId] || {};
+                    const hasMarks = Object.values(marks).some(m => m !== '' && m !== null && m !== undefined);
+                    
+                    if (hasMarks) {
+                        const updates = Object.entries(marks)
+                            .filter(([_, mark]) => mark !== '' && mark !== null && mark !== undefined)
+                            .map(([qId, mark]) => ({
+                                questionId: qId,
+                                marks: parseFloat(mark) || 0
+                            }));
+                        
+                        if (updates.length > 0) {
+                            const result = await batchUpdateSubjectiveMarks(resultId, updates);
+                            console.log('📡 Save all result:', result);
+                            
+                            if (result && result.success) {
+                                saved++;
+                                const sub = state.allSubmissions.find(r => r.id === resultId);
+                                if (sub) {
+                                    const marksObj = state.currentMarks[resultId] || {};
+                                    const mcqScore = parseFloat(sub.mcqScore) || 0;
+                                    const mcqTotal = parseFloat(sub.mcqTotal) || 0;
+                                    const subTotal = parseFloat(sub.subjectiveTotal) || 0;
+                                    const subScore = Object.values(marksObj).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+                                    const totalScore = mcqScore + subScore;
+                                    const maxScore = mcqTotal + subTotal;
+                                    const percentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+                                    const finalPercentage = parseFloat(percentage.toFixed(1));
+                                    const grade = calculateGrade(finalPercentage);
+                                    
+                                    sub.totalScore = totalScore;
+                                    sub.maxScore = maxScore;
+                                    sub.finalPercentage = finalPercentage;
+                                    sub.grade = grade;
+                                    sub.subjectiveMarks = marksObj;
+                                }
+                            } else {
+                                errors++;
+                            }
+                        }
+                    }
+                }
+                
+                showToast(`✅ ${saved} results updated! ${errors > 0 ? '⚠️ ' + errors + ' errors' : ''}`, 'success');
+                await loadSubmissions();
+                
+            } catch (error) {
+                console.error('Error saving all marks:', error);
+                showToast('Error saving marks: ' + error.message, 'error');
+            } finally {
+                state.isSaving = false;
+                DOM.saveAllBtn.disabled = false;
+                DOM.saveAllBtn.textContent = '💾 Save All Marks & Update Scores';
+            }
+        }
+
+        // ============================================
+        // MARK ALL CHECKED
+        // ============================================
+        
+        function markAllChecked() {
+            const inputs = document.querySelectorAll('.mark-input');
+            let count = 0;
+            
+            inputs.forEach(input => {
+                const val = parseFloat(input.value);
+                if (!isNaN(val) && val >= 0) {
+                    const card = input.closest('.answer-card');
+                    if (card) {
+                        const badge = card.querySelector('.status-badge');
+                        if (badge) {
+                            badge.textContent = '✅ Checked';
+                            badge.className = 'status-badge checked';
+                        }
+                    }
+                    count++;
+                }
+            });
+            
+            showToast(`✅ ${count} questions marked as checked!`, 'success');
+        }
+
+        // ============================================
+        // REFRESH DATA
+        // ============================================
+        
+        async function refreshData() {
+            await loadSubmissions();
+            showToast('🔄 Data refreshed!', 'info');
+        }
+
+        // ============================================
+        // UPDATE STATS
+        // ============================================
+        
+        function updateStats(submissions) {
+            const total = submissions.length;
+            
+            let checked = 0;
+            let totalSubScore = 0;
+            
+            for (const sub of submissions) {
+                const marks = state.currentMarks[sub.id] || {};
+                const hasMarks = Object.values(marks).some(m => m !== '' && m !== null && m !== undefined);
+                if (hasMarks) checked++;
+                
+                const subScore = Object.values(marks).reduce((a, b) => a + (parseFloat(b) || 0), 0);
+                totalSubScore += subScore;
+            }
+            
+            const pending = total - checked;
+            const avgScore = total > 0 ? (totalSubScore / total) : 0;
+            
+            DOM.totalCount.textContent = total;
+            DOM.pendingCount.textContent = pending;
+            DOM.checkedCount.textContent = checked;
+            DOM.avgSubScore.textContent = avgScore.toFixed(1);
+        }
+
+        console.log('✅ Check Answers Page Loaded Successfully!');
+    </script>
+</body>
+</html>
